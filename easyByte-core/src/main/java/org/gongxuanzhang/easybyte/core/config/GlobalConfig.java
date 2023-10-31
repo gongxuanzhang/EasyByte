@@ -1,4 +1,6 @@
-package org.gongxuanzhang.easybyte.core;
+package org.gongxuanzhang.easybyte.core.config;
+
+import org.gongxuanzhang.easybyte.core.EasyByteConfiguration;
 
 /**
  * Applies to global configuration
@@ -6,7 +8,7 @@ package org.gongxuanzhang.easybyte.core;
  *
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-public class GlobalConfig {
+public class GlobalConfig implements EasyByteConfiguration {
 
     private static volatile GlobalConfig INSTANCE = null;
 

@@ -7,7 +7,7 @@ package org.gongxuanzhang.easybyte.core;
  * and so on
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-public interface EasyByteConguration {
+public interface EasyByteConfiguration {
 
 
 }
