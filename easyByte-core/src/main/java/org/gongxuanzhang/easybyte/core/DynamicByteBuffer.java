@@ -1,6 +1,6 @@
 package org.gongxuanzhang.easybyte.core;
 
-import org.gongxuanzhang.easybyte.core.config.ObjectConfig;
+import org.gongxuanzhang.easybyte.core.environment.ObjectConfig;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;

@@ -1,6 +1,6 @@
 package org.gongxuanzhang.easybyte.core.exception;
 
-import org.gongxuanzhang.easybyte.core.ConvertRegister;
+import org.gongxuanzhang.easybyte.core.environment.ConvertRegister;
 import org.gongxuanzhang.easybyte.core.ReadConvert;
 import org.gongxuanzhang.easybyte.core.WriteConvert;
 

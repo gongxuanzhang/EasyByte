@@ -1,4 +1,4 @@
-package org.gongxuanzhang.easybyte.core;
+package org.gongxuanzhang.easybyte.core.environment;
 
 /**
  * easy byte configuration

@@ -1,4 +1,4 @@
-package org.gongxuanzhang.easybyte.core.config;
+package org.gongxuanzhang.easybyte.core.environment;
 
 import org.junit.jupiter.api.Test;
 

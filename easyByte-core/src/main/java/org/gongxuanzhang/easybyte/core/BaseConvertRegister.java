@@ -1,5 +1,7 @@
 package org.gongxuanzhang.easybyte.core;
 
+import org.gongxuanzhang.easybyte.core.environment.ConvertRegister;
+
 /**
  *
  *

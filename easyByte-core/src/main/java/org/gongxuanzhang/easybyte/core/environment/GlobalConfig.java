@@ -1,6 +1,4 @@
-package org.gongxuanzhang.easybyte.core.config;
-
-import org.gongxuanzhang.easybyte.core.EasyByteConfiguration;
+package org.gongxuanzhang.easybyte.core.environment;
 
 /**
  * Applies to global configuration
