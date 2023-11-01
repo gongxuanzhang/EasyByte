@@ -10,5 +10,5 @@ import org.gongxuanzhang.easybyte.core.EasyByteConfiguration;
  *
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-public class ObjectConfig implements EasyByteConfiguration {
+public class ObjectConfig  {
 }

@@ -1,5 +1,7 @@
 package org.gongxuanzhang.easybyte.core;
 
+import org.gongxuanzhang.easybyte.core.config.ObjectConfig;
+
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Map;
@@ -13,6 +15,22 @@ import java.util.Map;
  **/
 public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, ReferenceByteBuffer {
 
+
+    /**
+     * get a dynamicByteBuffer instance
+     **/
+    default DynamicByteBuffer open() {
+        return new ArrayDynamicByteBuffer();
+    }
+
+    /**
+     * get a dynamicByteBuffer instance
+     *
+     * @param config session config
+     **/
+    default DynamicByteBuffer open(ObjectConfig config) {
+        return new ArrayDynamicByteBuffer(config);
+    }
 
     /**
      * put a byte,similar to {@link ByteBuffer#put(byte)}.
@@ -189,10 +207,10 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
     /**
      * limit return type is {@link DynamicByteBuffer}
      *
-     * @param o       {@link ReferenceByteBuffer#putObject(Object, WriteConvert)}
+     * @param object       {@link ReferenceByteBuffer#putObject(Object, WriteConvert)}
      * @param convert {@link ReferenceByteBuffer#putObject(Object, WriteConvert)}
      * @return this
      **/
     @Override
-    <K> DynamicByteBuffer putObject(K o, WriteConvert<K> convert);
+    <K> DynamicByteBuffer putObject(K object, WriteConvert<K> convert);
 }

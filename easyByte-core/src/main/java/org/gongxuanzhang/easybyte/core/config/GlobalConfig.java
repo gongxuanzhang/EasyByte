@@ -8,7 +8,7 @@ import org.gongxuanzhang.easybyte.core.EasyByteConfiguration;
  *
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-public class GlobalConfig implements EasyByteConfiguration {
+public class GlobalConfig  {
 
     private static volatile GlobalConfig INSTANCE = null;
 

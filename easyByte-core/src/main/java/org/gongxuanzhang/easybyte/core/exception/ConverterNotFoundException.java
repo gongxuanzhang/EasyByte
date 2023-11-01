@@ -6,4 +6,7 @@ package org.gongxuanzhang.easybyte.core.exception;
 public class ConverterNotFoundException extends RuntimeException {
 
 
+    public ConverterNotFoundException(Class<?> type) {
+        super(type.getSimpleName() + "convert does not exists");
+    }
 }
