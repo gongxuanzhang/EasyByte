@@ -1,8 +1,8 @@
 package org.gongxuanzhang.easybyte.core.exception;
 
+import org.gongxuanzhang.easybyte.core.ReadConverter;
+import org.gongxuanzhang.easybyte.core.WriteConverter;
 import org.gongxuanzhang.easybyte.core.environment.ConvertRegister;
-import org.gongxuanzhang.easybyte.core.ReadConvert;
-import org.gongxuanzhang.easybyte.core.WriteConvert;
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
@@ -10,11 +10,11 @@ import org.gongxuanzhang.easybyte.core.WriteConvert;
 public class ConvertDuplicationException extends RuntimeException {
 
 
-    public ConvertDuplicationException(ConvertRegister convertRegister, WriteConvert<?> convert) {
+    public ConvertDuplicationException(ConvertRegister convertRegister, WriteConverter<?> convert) {
         super(convertRegister.getClass().getSimpleName() + "has been register " + convert.getClass().getSimpleName());
     }
 
-    public ConvertDuplicationException(ConvertRegister convertRegister, ReadConvert<?> convert) {
+    public ConvertDuplicationException(ConvertRegister convertRegister, ReadConverter<?> convert) {
         super(convertRegister.getClass().getSimpleName() + "has been register " + convert.getClass().getSimpleName());
     }
 }

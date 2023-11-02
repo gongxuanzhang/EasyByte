@@ -4,7 +4,7 @@ package org.gongxuanzhang.easybyte.core;
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
 @FunctionalInterface
-public interface ReadConvert<V> {
+public interface ReadConverter<V> {
 
     /**
      * convert object from byte array
@@ -12,7 +12,7 @@ public interface ReadConvert<V> {
      * @param bytes from buffer
      * @return maybe null
      **/
-    V toBytes(byte[] bytes);
+    V toObject(byte[] bytes);
 
 
 }

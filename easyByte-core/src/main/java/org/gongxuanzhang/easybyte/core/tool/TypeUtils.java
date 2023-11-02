@@ -2,6 +2,8 @@ package org.gongxuanzhang.easybyte.core.tool;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * support get class info
@@ -21,12 +23,7 @@ public class TypeUtils {
      * @return maybe null
      **/
     public static Class<?> getFirstGenericType(Class<?> clazz) {
-        Type type = clazz.getGenericSuperclass();
-        if (!(type instanceof ParameterizedType)) {
-            return null;
-        }
-        ParameterizedType parameterizedType = (ParameterizedType) type;
-        Type[] typeArguments = parameterizedType.getActualTypeArguments();
+        Type[] typeArguments = getGenericTypes(clazz);
         if (typeArguments.length == 0) {
             return null;
         }
@@ -35,6 +32,16 @@ public class TypeUtils {
             return (Class<?>) firstGeneric;
         }
         return null;
+    }
+
+
+    private static Type[] getGenericTypes(Class<?> clazz) {
+        Type type = clazz.getGenericSuperclass();
+        if (!(type instanceof ParameterizedType)) {
+            return new Type[0];
+        }
+        ParameterizedType parameterizedType = (ParameterizedType) type;
+        return parameterizedType.getActualTypeArguments();
     }
 
 

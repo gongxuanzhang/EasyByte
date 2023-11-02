@@ -4,7 +4,7 @@ package org.gongxuanzhang.easybyte.core;
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
 @FunctionalInterface
-public interface WriteConvert<V> {
+public interface WriteConverter<V> {
 
     /**
      * convert sth to byte array

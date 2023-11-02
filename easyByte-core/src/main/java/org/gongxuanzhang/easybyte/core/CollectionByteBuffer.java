@@ -1,5 +1,6 @@
 package org.gongxuanzhang.easybyte.core;
 
+import org.gongxuanzhang.easybyte.core.environment.ConvertRegister;
 import org.gongxuanzhang.easybyte.core.exception.ConverterNotFoundException;
 
 import java.util.Collection;
@@ -10,14 +11,22 @@ import java.util.List;
  *
  * @author gongxuanzhangmelt@gmail.com
  **/
-public interface CollectionByteBuffer {
+public interface CollectionByteBuffer extends ConvertRegister {
 
     /**
      * put a collection
+     * first put collection size and then put collection item 1 size item 1 byte item N size item N byte like follows
+     * ┌──────────┬──────┬─────┬─────┬──────┐
+     * │collection│item1 │item1│itemN│itemN │
+     * │   size   │ size │ byte│ size│ byte │
+     * └──────────┴──────┴─────┴─────┴──────┘
+     * <p>
      * the order of puts depends on the order of traversal
      * item in collection will converted to byte array for put buffer
      * primitive type and packing type will invoke corresponding method
      * reference type will find convert or wrapper to invoke method
+     * <p>
+     * <p>
      * if neither convert nor wrapper can be found,an {@link ConverterNotFoundException} will be throw
      *
      * @param collection use for put
@@ -33,7 +42,7 @@ public interface CollectionByteBuffer {
      * @param convert    specify convert
      * @return this
      **/
-    <V> DynamicByteBuffer putCollection(Collection<V> collection, WriteConvert<V> convert);
+    <V> DynamicByteBuffer putCollection(Collection<V> collection, WriteConverter<V> convert);
 
 
     /**
@@ -42,7 +51,9 @@ public interface CollectionByteBuffer {
      * convert will find in register
      * if can't find,will throw {@link ConverterNotFoundException}
      *
+     * @param clazz expect item class
      * @return list
+     * @see CollectionByteBuffer#putCollection(Collection)
      **/
     <V> List<V> getCollection(Class<V> clazz);
 
@@ -51,6 +62,7 @@ public interface CollectionByteBuffer {
      *
      * @param convert not null
      * @return list {@link this#getCollection(Class)}
+     * @see CollectionByteBuffer#putCollection(Collection)
      **/
-    <V> List<V> getCollection(ReadConvert<V> convert);
+    <V> List<V> getCollection(ReadConverter<V> convert);
 }

@@ -6,7 +6,7 @@ package org.gongxuanzhang.easybyte.core.environment;
  *
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-public class GlobalConfig  {
+public class GlobalConfig extends BaseConfiguration {
 
     private static volatile GlobalConfig INSTANCE = null;
 
@@ -20,8 +20,6 @@ public class GlobalConfig  {
         }
         return INSTANCE;
     }
-
-
 
 
 }

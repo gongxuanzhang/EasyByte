@@ -1,5 +1,8 @@
 package org.gongxuanzhang.easybyte.core;
 
+import org.gongxuanzhang.easybyte.core.environment.ConvertRegister;
+import org.gongxuanzhang.easybyte.core.exception.ConverterNotFoundException;
+
 import java.util.Map;
 
 /**
@@ -7,7 +10,7 @@ import java.util.Map;
  *
  * @author gongxuanzhangmelt@gmail.com
  **/
-public interface MapByteBuffer {
+public interface MapByteBuffer extends ConvertRegister {
 
     /**
      * get a map from buffer.
@@ -24,22 +27,22 @@ public interface MapByteBuffer {
      * find convert by keyClazz .
      * special value convert
      *
-     * @param keyClazz     key class
-     * @param valueConvert value convert
+     * @param keyClazz       key class
+     * @param valueConverter value convert
      * @return map
      **/
-    <K, V> Map<K, V> getMap(Class<K> keyClazz, WriteConvert<V> valueConvert);
+    <K, V> Map<K, V> getMap(Class<K> keyClazz, WriteConverter<V> valueConverter);
 
     /**
      * get a map from buffer.
      * find convert by valueClazz.
      * special key convert
      *
-     * @param keyConvert key convert
-     * @param valueClazz value class
+     * @param keyConverter key convert
+     * @param valueClazz   value class
      * @return map
      **/
-    <K, V> Map<K, V> getMap(WriteConvert<K> keyConvert, Class<V> valueClazz);
+    <K, V> Map<K, V> getMap(WriteConverter<K> keyConverter, Class<V> valueClazz);
 
     /**
      * get a map from buffer.
@@ -49,31 +52,34 @@ public interface MapByteBuffer {
      * @param valueConvert value convert
      * @return map
      **/
-    <K, V> Map<K, V> getMap(WriteConvert<K> keyConvert, WriteConvert<V> valueConvert);
+    <K, V> Map<K, V> getMap(WriteConverter<K> keyConvert, WriteConverter<V> valueConvert);
 
 
     /**
      * put a map to buffer.
-     * if key or value is {@link  ByteWrapper}
-     * will invoke {@link ByteWrapper#toBytes()}
-     * else will find convert in register.
-     * neither will throw {@link org.gongxuanzhang.easybyte.core.exception.ConverterNotFoundException}
+     * if key or value is {@link  ByteWrapper} will invoke {@link ByteWrapper#toBytes()}
+     * else will find converter in register.
+     * if map is not empty that easy byte will find converter by the class that first entry key and value .
+     * so the items in map is polymorphism please use
+     * {@link MapByteBuffer#putMap(Map, WriteConverter, WriteConverter)} since can't get accurate generic type of map.
+     * <p>
+     * it maybe throw {@link ConverterNotFoundException} when can't find converter
      *
-     * @param map map
+     * @param map map key not null
      * @return this
      **/
     MapByteBuffer putMap(Map<?, ?> map);
 
     /**
      * put a map to buffer.
-     * special key and value convert to use.
+     * special key and value converter to use.
      *
-     * @param map          data
-     * @param keyConvert   special key convert
-     * @param valueConvert special value convert
+     * @param map            data
+     * @param keyConverter   special key convert
+     * @param valueConverter special value convert
      * @return this
      **/
-    <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConvert<K> keyConvert, WriteConvert<V> valueConvert);
+    <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConverter<K> keyConverter, WriteConverter<V> valueConverter);
 
     /**
      * put a map to buffer.
@@ -83,7 +89,7 @@ public interface MapByteBuffer {
      * @param valueConvert special value convert
      * @return this
      **/
-    <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConvert<V> valueConvert);
+    <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConverter<V> valueConvert);
 
 
 }

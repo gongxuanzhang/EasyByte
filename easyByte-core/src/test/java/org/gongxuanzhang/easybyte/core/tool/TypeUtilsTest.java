@@ -3,6 +3,9 @@ package org.gongxuanzhang.easybyte.core.tool;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 class TypeUtilsTest {
 
@@ -12,7 +15,6 @@ class TypeUtilsTest {
         Assertions.assertSame(TypeUtils.getFirstGenericType(Son.class), Integer.class);
         Assertions.assertNull(TypeUtils.getFirstGenericType(NoneSon.class));
         Assertions.assertNull(TypeUtils.getFirstGenericType(None.class));
-
     }
 
 

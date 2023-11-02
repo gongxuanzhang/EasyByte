@@ -1,7 +1,7 @@
 package org.gongxuanzhang.easybyte.core.environment;
 
-import org.gongxuanzhang.easybyte.core.ReadConvert;
-import org.gongxuanzhang.easybyte.core.WriteConvert;
+import org.gongxuanzhang.easybyte.core.ReadConverter;
+import org.gongxuanzhang.easybyte.core.WriteConverter;
 import org.gongxuanzhang.easybyte.core.exception.ConvertDuplicationException;
 
 /**
@@ -11,22 +11,22 @@ public interface ConvertRegister {
 
 
     /**
-     * register a writeConvert in register.
-     * writeConvert type duplicate result in throw {@link ConvertDuplicationException}
+     * register a writeConverter in register.
+     * writeConverter type duplicate result in throw {@link ConvertDuplicationException}
      * The types of subclasses and superclasses can coexist
      * Follow the principle of the proximity
      *
-     * @param writeConvert a writeConvert
+     * @param writeConverter a writeConverter
      **/
-    void registerWriteConvert(WriteConvert<?> writeConvert);
+    void registerReadConverter(WriteConverter<?> writeConverter);
 
     /**
-     * register a readConvert in register.
-     * readConvert type duplicate result in throw {@link ConvertDuplicationException}
+     * register a readConverter in register.
+     * readConverter type duplicate result in throw {@link ConvertDuplicationException}
      *
-     * @param readConvert a writeConvert
+     * @param readConverter a writeConvert
      **/
-    void registerWriteConvert(ReadConvert<?> readConvert);
+    void registerReadConverter(ReadConverter<?> readConverter);
 
 
     /**
@@ -35,15 +35,15 @@ public interface ConvertRegister {
      * @param clazz class
      * @return convert or null
      **/
-    <V> WriteConvert<V> findWriteConvert(Class<V> clazz);
+    <V> WriteConverter<V> findWriteConverter(Class<V> clazz);
 
     /**
-     * find ReadConvert by register . It is may be null.
+     * find ReadConverter by register . It is may be null.
      *
      * @param clazz class
      * @return convert or null
      **/
-    <V> ReadConvert<V> findReadConvert(Class<V> clazz);
+    <V> ReadConverter<V> findReadConverter(Class<V> clazz);
 
 
 }

@@ -8,5 +8,5 @@ package org.gongxuanzhang.easybyte.core.environment;
  *
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-public class ObjectConfig  {
+public class ObjectConfig extends BaseConfiguration {
 }

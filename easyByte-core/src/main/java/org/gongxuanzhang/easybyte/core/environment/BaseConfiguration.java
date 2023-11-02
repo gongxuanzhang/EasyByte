@@ -1,7 +1,7 @@
 package org.gongxuanzhang.easybyte.core.environment;
 
-import org.gongxuanzhang.easybyte.core.ReadConvert;
-import org.gongxuanzhang.easybyte.core.WriteConvert;
+import org.gongxuanzhang.easybyte.core.ReadConverter;
+import org.gongxuanzhang.easybyte.core.WriteConverter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,29 +11,42 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public abstract class BaseConfiguration implements EasyByteConfiguration {
 
-    private final Map<Class<?>, WriteConvert<?>> writeConvertMap = new ConcurrentHashMap<>();
+    protected ConvertRegister convertRegister = new MapConvertRegister();
 
-    private final Map<Class<?>, ReadConvert<?>> readConvertMap = new ConcurrentHashMap<>();
-
+    protected Map<String, String> propertiesMap = new ConcurrentHashMap<>();
 
     @Override
-    public void registerWriteConvert(WriteConvert<?> writeConvert) {
-
-        this.writeConvertMap.put(writeConvert.getClass(), writeConvert);
+    public void setProperty(String key, String value) {
+        propertiesMap.put(key, value);
     }
 
     @Override
-    public void registerWriteConvert(ReadConvert<?> readConvert) {
-
+    public String getProperty(String key) {
+        return propertiesMap.get(key);
     }
 
     @Override
-    public <V> WriteConvert<V> findWriteConvert(Class<V> clazz) {
-        return null;
+    public String getProperty(String key, String defaultValue) {
+        return propertiesMap.getOrDefault(key, defaultValue);
     }
 
     @Override
-    public <V> ReadConvert<V> findReadConvert(Class<V> clazz) {
-        return null;
+    public void registerReadConverter(WriteConverter<?> writeConverter) {
+        convertRegister.registerReadConverter(writeConverter);
+    }
+
+    @Override
+    public void registerReadConverter(ReadConverter<?> readConverter) {
+        convertRegister.registerReadConverter(readConverter);
+    }
+
+    @Override
+    public <V> WriteConverter<V> findWriteConverter(Class<V> clazz) {
+        return convertRegister.findWriteConverter(clazz);
+    }
+
+    @Override
+    public <V> ReadConverter<V> findReadConverter(Class<V> clazz) {
+        return convertRegister.findReadConverter(clazz);
     }
 }
