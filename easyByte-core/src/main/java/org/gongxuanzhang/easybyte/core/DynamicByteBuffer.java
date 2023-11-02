@@ -2,12 +2,10 @@ package org.gongxuanzhang.easybyte.core;
 
 import org.gongxuanzhang.easybyte.core.environment.ConvertRegister;
 import org.gongxuanzhang.easybyte.core.environment.ObjectConfig;
-import org.gongxuanzhang.easybyte.core.tool.TypeUtils;
 
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -108,13 +106,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param bool a boolean
      * @return this
      **/
-    default DynamicByteBuffer putBoolean(boolean bool) {
-        if (bool) {
-            return this.put((byte) 1);
-        }
-        return this.put((byte) 0);
-    }
-
+    DynamicByteBuffer putBoolean(boolean bool);
 
     /**
      * Read a byte from the buffer and advance the position, similar to {@link ByteBuffer#get()}.
@@ -127,6 +119,8 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * read a byte array input to container, similar to {@link ByteBuffer#get(byte[])}
      *
      * @param container {@link ByteBuffer#get(byte[])} param
+     * @throws BufferUnderflowException If there are fewer than {@code container} bytes
+     *                                  remaining in this buffer
      **/
     void get(byte[] container);
 
@@ -134,13 +128,10 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * read a special length from buffer.
      * if buffer remain  less than length,it will throw error
      *
+     * @param length read length of byte
      * @return a byte array filled from buffer,length is param
      **/
-    default byte[] getLength(int length) {
-        byte[] container = new byte[length];
-        this.get(container);
-        return container;
-    }
+    byte[] getLength(int length);
 
     /**
      * Read a short from the buffer and advance the position, similar to {@link ByteBuffer#getShort()}.
@@ -181,9 +172,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * Read a boolean from the buffer and advance the position.
      * boolean as byte to save that zero is false and non-zero is true.
      **/
-    default boolean getBoolean() {
-        return get() != 0;
-    }
+    boolean getBoolean();
 
     /**
      * Read a double from the buffer and advance the position, similar to {@link ByteBuffer#getChar()} .
@@ -198,16 +187,8 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param collection {@link CollectionByteBuffer#putCollection(Collection)}
      * @return this
      **/
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    default DynamicByteBuffer putCollection(Collection<?> collection) {
-        if (collection == null || collection.isEmpty()) {
-            return putInt(0);
-        }
-        Class<?> genericType = TypeUtils.getFirstGenericType(collection.getClass());
-        WriteConverter writeConvert = findWriteConverter(genericType);
-        return putCollection(collection, writeConvert);
-    }
+    DynamicByteBuffer putCollection(Collection<?> collection);
 
     /**
      * limit return type is {@link DynamicByteBuffer}
@@ -217,18 +198,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @return this
      **/
     @Override
-    default <V> DynamicByteBuffer putCollection(Collection<V> collection, WriteConverter<V> convert) {
-        if (collection == null || collection.isEmpty()) {
-            return putInt(0);
-        }
-        putInt(collection.size());
-        collection.forEach(item -> {
-            byte[] itemBytes = convert.toBytes(item);
-            putInt(itemBytes.length);
-            put(itemBytes);
-        });
-        return this;
-    }
+    <V> DynamicByteBuffer putCollection(Collection<V> collection, WriteConverter<V> convert);
 
     /**
      * limit return type is {@link DynamicByteBuffer}
@@ -236,37 +206,8 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param map {@link MapByteBuffer#putMap(Map)}
      * @return this
      **/
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    default MapByteBuffer putMap(Map<?, ?> map) {
-        if (map == null || map.isEmpty()) {
-            return this.putInt(0);
-        }
-        WriteConverter keyConverter = null;
-        WriteConverter valueConverter = null;
-        for (Map.Entry<?, ?> entry : map.entrySet()) {
-            //  key must not null
-            Object key = entry.getKey();
-            if (keyConverter == null) {
-                keyConverter = findWriteConverter(key.getClass());
-            }
-            byte[] keyBytes = keyConverter.toBytes(key);
-            putInt(keyBytes.length);
-            put(keyBytes);
-            Object value = entry.getValue();
-            if (value == null) {
-                putInt(0);
-                continue;
-            }
-            if (valueConverter == null) {
-                valueConverter = findWriteConverter(value.getClass());
-            }
-            byte[] valueBytes = valueConverter.toBytes(value);
-            putInt(valueBytes.length);
-            put(valueBytes);
-        }
-        return this;
-    }
+    DynamicByteBuffer putMap(Map<?, ?> map);
 
     /**
      * limit return type is {@link DynamicByteBuffer}
@@ -277,26 +218,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @return this
      **/
     @Override
-    default <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConverter<K> keyConverter,
-                                        WriteConverter<V> valueConverter) {
-        if (map == null || map.isEmpty()) {
-            return putInt(0);
-        }
-        putInt(map.size());
-        map.forEach((k, v) -> {
-            byte[] keyBytes = keyConverter.toBytes(k);
-            putInt(keyBytes.length);
-            put(keyBytes);
-            if (v == null) {
-                putInt(0);
-                return;
-            }
-            byte[] valueBytes = valueConverter.toBytes(v);
-            putInt(valueBytes.length);
-            put(valueBytes);
-        });
-        return this;
-    }
+    <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConverter<K> keyConverter, WriteConverter<V> valueConverter);
 
     /**
      * limit return type is {@link DynamicByteBuffer}
@@ -305,34 +227,9 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param valueConverter {@link MapByteBuffer#putMap(Map, WriteConverter)}
      * @return this
      **/
-    @SuppressWarnings("unchecked")
     @Override
-    default <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConverter<V> valueConverter) {
-        if (map == null || map.isEmpty()) {
-            return this.putInt(0);
-        }
-        WriteConverter<K> keyConverter = null;
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            //  key must not null
-            K key = entry.getKey();
-            if (keyConverter == null) {
-                keyConverter = findWriteConverter((Class<K>) key.getClass());
-            }
-            byte[] keyBytes = keyConverter.toBytes(key);
-            putInt(keyBytes.length);
-            put(keyBytes);
-            V value = entry.getValue();
-            if (value == null) {
-                putInt(0);
-                continue;
-            }
-            byte[] valueBytes = valueConverter.toBytes(value);
-            putInt(valueBytes.length);
-            put(valueBytes);
-        }
-        return this;
+    <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConverter<V> valueConverter);
 
-    }
 
     /**
      * limit return type is {@link DynamicByteBuffer}
@@ -340,12 +237,8 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param o {@link ReferenceByteBuffer#putObject(Object)}
      * @return this
      **/
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    default DynamicByteBuffer putObject(Object o) {
-        WriteConverter<?> writeConvert = findWriteConverter(o.getClass());
-        return this.putObject(o, (WriteConverter) writeConvert);
-    }
+    DynamicByteBuffer putObject(Object o);
 
     /**
      * limit return type is {@link DynamicByteBuffer}
@@ -355,46 +248,6 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @return this
      **/
     @Override
-    default <K> DynamicByteBuffer putObject(K object, WriteConverter<K> converter) {
-        byte[] objectBytes = converter.toBytes(object);
-        putInt(objectBytes.length);
-        put(objectBytes);
-        return this;
-    }
-
-    /**
-     * default implementation that follow the principle of {@link CollectionByteBuffer#putCollection(Collection)}
-     *
-     * @param clazz {@link CollectionByteBuffer#getCollection(Class)}
-     * @return an ArrayList
-     * @see CollectionByteBuffer#getCollection(Class)
-     **/
-    @Override
-    default <V> List<V> getCollection(Class<V> clazz) {
-        ReadConverter<V> readConvert = findReadConverter(clazz);
-        return getCollection(readConvert);
-    }
-
-
-    /**
-     * default implementation that follow the principle of {@link CollectionByteBuffer#putCollection(Collection)}
-     *
-     * @param convert {@link CollectionByteBuffer#getCollection(ReadConverter)}
-     * @return an ArrayList
-     * @see CollectionByteBuffer#getCollection(Class)
-     **/
-    @Override
-    default <V> List<V> getCollection(ReadConverter<V> convert) {
-        int collectionSize = getInt();
-        List<V> result = new ArrayList<>(collectionSize);
-        for (int i = 0; i < collectionSize; i++) {
-            int itemLength = getInt();
-            byte[] itemBytes = getLength(itemLength);
-            V item = convert.toObject(itemBytes);
-            result.add(item);
-        }
-        return result;
-    }
-
+    <K> DynamicByteBuffer putObject(K object, WriteConverter<K> converter);
 
 }

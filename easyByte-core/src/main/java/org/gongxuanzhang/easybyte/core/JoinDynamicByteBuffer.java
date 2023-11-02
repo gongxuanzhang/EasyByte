@@ -5,7 +5,6 @@ import org.gongxuanzhang.easybyte.core.environment.ObjectConfig;
 import org.gongxuanzhang.easybyte.core.exception.ConverterNotFoundException;
 
 import java.nio.ByteBuffer;
-import java.util.Map;
 
 /**
  * delegate to {@link ByteBuffer}.
@@ -14,7 +13,7 @@ import java.util.Map;
  *
  * @author gongxuanzhangmelt@gmail.com
  **/
-public class JoinDynamicByteBuffer implements DynamicByteBuffer {
+public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
 
     private static final int STRIDE = 1024 * 16;
 
@@ -39,149 +38,13 @@ public class JoinDynamicByteBuffer implements DynamicByteBuffer {
     }
 
 
-    @Override
-    public DynamicByteBuffer put(byte b) {
-        checkLength(Byte.BYTES);
-        this.delegateBuffer.put(b);
-        return this;
-    }
-
-
-    @Override
-    public DynamicByteBuffer put(byte[] bytes) {
-        checkLength(bytes.length);
-        this.delegateBuffer.put(bytes);
-        return this;
-    }
-
-    @Override
-    public DynamicByteBuffer putShort(short s) {
-        checkLength(Short.BYTES);
-        this.delegateBuffer.putShort(s);
-        return this;
-    }
-
-
-    @Override
-    public DynamicByteBuffer putInt(int i) {
-        checkLength(Integer.BYTES);
-        this.delegateBuffer.putInt(i);
-        return this;
-    }
-
-    @Override
-    public DynamicByteBuffer putLong(long l) {
-        checkLength(Long.BYTES);
-        this.delegateBuffer.putLong(l);
-        return this;
-    }
-
-    @Override
-    public DynamicByteBuffer putFloat(float f) {
-        checkLength(Float.BYTES);
-        this.delegateBuffer.putFloat(f);
-        return this;
-    }
-
-    @Override
-    public DynamicByteBuffer putDouble(double d) {
-        checkLength(Double.BYTES);
-        this.delegateBuffer.putDouble(d);
-        return this;
-    }
-
-    @Override
-    public DynamicByteBuffer putChar(char c) {
-        checkLength(Character.BYTES);
-        this.delegateBuffer.putChar(c);
-        return this;
-    }
-
-
-    @Override
-    public byte get() {
-        return this.delegateBuffer.get();
-    }
-
-    @Override
-    public void get(byte[] container) {
-        this.delegateBuffer.get(container);
-    }
-
-
-    @Override
-    public char getChar() {
-        return delegateBuffer.getChar();
-    }
-
-    @Override
-    public short getShort() {
-        return delegateBuffer.getShort();
-    }
-
-    @Override
-    public int getInt() {
-        return delegateBuffer.getInt();
-    }
-
-    @Override
-    public long getLong() {
-        return delegateBuffer.getLong();
-    }
-
-    @Override
-    public float getFloat() {
-        return delegateBuffer.getFloat();
-    }
-
-    @Override
-    public double getDouble() {
-        return delegateBuffer.getDouble();
-    }
-
-
-    @Override
-    public <K, V> Map<K, V> getMap(Class<K> keyClazz, Class<V> valueClazz) {
-        return null;
-    }
-
-    @Override
-    public <K, V> Map<K, V> getMap(Class<K> keyClazz, WriteConverter<V> valueConverter) {
-        return null;
-    }
-
-    @Override
-    public <K, V> Map<K, V> getMap(WriteConverter<K> keyConverter, Class<V> valueClazz) {
-        return null;
-    }
-
-    @Override
-    public <K, V> Map<K, V> getMap(WriteConverter<K> keyConvert, WriteConverter<V> valueConvert) {
-        return null;
-    }
-
-
-    @Override
-    public <K> K getObject(ReadConverter<K> convert) {
-        return null;
-    }
-
-
-    private void checkLength(int addLength) {
-        if (this.delegateBuffer.remaining() < addLength) {
-            ByteBuffer buffer = ByteBuffer.allocate(newCapacity(addLength));
-            buffer.put(this.delegateBuffer);
-            this.delegateBuffer = buffer;
-        }
-    }
-
-
     /**
      * figure out the new capacity.
      *
      * @param needLength will put element length
      **/
-    private int newCapacity(int needLength) {
+    @Override
+    public int newCapacity(int needLength) {
         if (needLength < JOG) {
             return this.delegateBuffer.capacity() + JOG;
         }

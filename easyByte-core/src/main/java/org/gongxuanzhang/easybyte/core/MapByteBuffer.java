@@ -31,7 +31,7 @@ public interface MapByteBuffer extends ConvertRegister {
      * @param valueConverter value convert
      * @return map
      **/
-    <K, V> Map<K, V> getMap(Class<K> keyClazz, WriteConverter<V> valueConverter);
+    <K, V> Map<K, V> getMap(Class<K> keyClazz, ReadConverter<V> valueConverter);
 
     /**
      * get a map from buffer.
@@ -42,7 +42,7 @@ public interface MapByteBuffer extends ConvertRegister {
      * @param valueClazz   value class
      * @return map
      **/
-    <K, V> Map<K, V> getMap(WriteConverter<K> keyConverter, Class<V> valueClazz);
+    <K, V> Map<K, V> getMap(ReadConverter<K> keyConverter, Class<V> valueClazz);
 
     /**
      * get a map from buffer.
@@ -52,7 +52,7 @@ public interface MapByteBuffer extends ConvertRegister {
      * @param valueConvert value convert
      * @return map
      **/
-    <K, V> Map<K, V> getMap(WriteConverter<K> keyConvert, WriteConverter<V> valueConvert);
+    <K, V> Map<K, V> getMap(ReadConverter<K> keyConvert, ReadConverter<V> valueConvert);
 
 
     /**

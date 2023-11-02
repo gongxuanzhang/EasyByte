@@ -24,9 +24,7 @@ public interface ReferenceByteBuffer extends ConvertRegister {
      * @param clazz object type
      * @return map
      **/
-    default <K> K getObject(Class<K> clazz) {
-        return getObject(findReadConverter(clazz));
-    }
+    <K> K getObject(Class<K> clazz);
 
     /**
      * put a object in buffer
