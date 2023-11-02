@@ -4,6 +4,7 @@ import org.gongxuanzhang.easybyte.core.tool.TypeUtils;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,10 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
 
     protected volatile ByteBuffer delegateBuffer;
+
+    protected AbstractDynamicByteBuffer(){
+        delegateBuffer = ByteBuffer.allocate(16);
+    }
 
 
     /**
@@ -392,4 +397,9 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
         return this;
     }
 
+
+    @Override
+    public byte[] toBytes() {
+        return Arrays.copyOf(this.delegateBuffer.array(), this.delegateBuffer.position());
+    }
 }

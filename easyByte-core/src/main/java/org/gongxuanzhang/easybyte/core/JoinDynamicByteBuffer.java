@@ -20,8 +20,6 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
     private static final int JOG = 1024;
 
 
-    volatile ByteBuffer delegateBuffer;
-
     private final GlobalConfig globalConfig;
 
     private ObjectConfig objectConfig;
@@ -32,9 +30,9 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
     }
 
     JoinDynamicByteBuffer(ObjectConfig objectConfig) {
+        super();
         this.objectConfig = objectConfig;
         this.globalConfig = GlobalConfig.getInstance();
-        this.delegateBuffer = ByteBuffer.allocate(1024);
     }
 
 

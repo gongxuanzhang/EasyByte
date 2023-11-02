@@ -15,13 +15,14 @@ import java.util.Map;
  *
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, ReferenceByteBuffer, ConvertRegister {
+public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, ReferenceByteBuffer, ConvertRegister,
+        ByteWrapper {
 
 
     /**
      * get a dynamicByteBuffer instance
      **/
-    default DynamicByteBuffer open() {
+    static DynamicByteBuffer open() {
         return new JoinDynamicByteBuffer();
     }
 
@@ -30,7 +31,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      *
      * @param config session config
      **/
-    default DynamicByteBuffer open(ObjectConfig config) {
+    static DynamicByteBuffer open(ObjectConfig config) {
         return new JoinDynamicByteBuffer(config);
     }
 
@@ -249,5 +250,6 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      **/
     @Override
     <K> DynamicByteBuffer putObject(K object, WriteConverter<K> converter);
+
 
 }
