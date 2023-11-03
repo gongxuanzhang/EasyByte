@@ -20,20 +20,36 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
 
 
     /**
-     * get a dynamicByteBuffer instance
+     * get a dynamicByteBuffer instance,similar to {@link ByteBuffer#allocate(int)}
      **/
-    static DynamicByteBuffer open() {
+    static DynamicByteBuffer allocate() {
         return new JoinDynamicByteBuffer();
     }
 
+
     /**
-     * get a dynamicByteBuffer instance
+     * get a dynamicByteBuffer instance with config,similar to {@link ByteBuffer#allocate(int)}
      *
      * @param config session config
      **/
-    static DynamicByteBuffer open(ObjectConfig config) {
+    static DynamicByteBuffer allocate(ObjectConfig config) {
         return new JoinDynamicByteBuffer(config);
     }
+
+    /**
+     * wrap a byte array into buffer,similar to {@link ByteBuffer#wrap(byte[])}
+     **/
+    static DynamicByteBuffer wrap(byte[] bytes) {
+        return new JoinDynamicByteBuffer(bytes);
+    }
+
+    /**
+     * wrap a byte array into buffer with config,similar to {@link ByteBuffer#wrap(byte[])}
+     **/
+    static DynamicByteBuffer wrap(byte[] bytes, ObjectConfig config) {
+        return new JoinDynamicByteBuffer(bytes, config);
+    }
+
 
     /**
      * put a byte,similar to {@link ByteBuffer#put(byte)}.

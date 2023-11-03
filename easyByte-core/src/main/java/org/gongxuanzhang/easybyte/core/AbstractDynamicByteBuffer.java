@@ -1,6 +1,8 @@
 package org.gongxuanzhang.easybyte.core;
 
 import org.gongxuanzhang.easybyte.core.tool.TypeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -17,11 +19,16 @@ import java.util.Map;
  **/
 public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDynamicByteBuffer.class);
 
     protected volatile ByteBuffer delegateBuffer;
 
-    protected AbstractDynamicByteBuffer(){
+    protected AbstractDynamicByteBuffer() {
         delegateBuffer = ByteBuffer.allocate(16);
+    }
+
+    protected AbstractDynamicByteBuffer(byte[] bytes) {
+        delegateBuffer = ByteBuffer.wrap(bytes);
     }
 
 
@@ -42,7 +49,13 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
     protected void checkLength(int elementLength) {
         if (this.delegateBuffer.remaining() < elementLength) {
             ByteBuffer buffer = ByteBuffer.allocate(newCapacity(elementLength));
+            this.delegateBuffer.flip();
             buffer.put(this.delegateBuffer);
+            this.delegateBuffer.clear();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("grow is a buffer of length {},expanded by {} lengths", buffer.capacity(),
+                        buffer.capacity() - this.delegateBuffer.capacity());
+            }
             this.delegateBuffer = buffer;
         }
     }

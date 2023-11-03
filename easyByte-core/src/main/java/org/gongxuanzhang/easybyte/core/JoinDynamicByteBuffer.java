@@ -15,9 +15,9 @@ import java.nio.ByteBuffer;
  **/
 public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
 
-    private static final int STRIDE = 1024 * 16;
+    private static final int JOG = 1 << 10;
 
-    private static final int JOG = 1024;
+    private static final int STRIDE = JOG << 4;
 
 
     private final GlobalConfig globalConfig;
@@ -26,12 +26,24 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
 
 
     JoinDynamicByteBuffer() {
-        this(null);
+        super();
+        this.objectConfig = null;
+        this.globalConfig = GlobalConfig.getInstance();
     }
 
     JoinDynamicByteBuffer(ObjectConfig objectConfig) {
         super();
         this.objectConfig = objectConfig;
+        this.globalConfig = GlobalConfig.getInstance();
+    }
+
+    public JoinDynamicByteBuffer(byte[] bytes) {
+        this(bytes, null);
+    }
+
+    public JoinDynamicByteBuffer(byte[] bytes, ObjectConfig config) {
+        super(bytes);
+        this.objectConfig = config;
         this.globalConfig = GlobalConfig.getInstance();
     }
 
@@ -42,14 +54,14 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
      * @param needLength will put element length
      **/
     @Override
-    public int newCapacity(int needLength) {
-        if (needLength < JOG) {
-            return this.delegateBuffer.capacity() + JOG;
+    protected int newCapacity(int needLength) {
+        int expectedCapacity = this.delegateBuffer.capacity() + needLength;
+        if (expectedCapacity < STRIDE) {
+            return ((expectedCapacity / JOG) + 1) << 10;
         }
-        if (needLength < STRIDE) {
-            return this.delegateBuffer.capacity() + ((needLength / JOG) + 1) << 10;
-        }
-        return this.delegateBuffer.capacity() + ((needLength / STRIDE) + 1) << 10;
+        int zeroCount = Integer.numberOfLeadingZeros(expectedCapacity);
+        int bitBase = (31 - zeroCount - 2);
+        return ((expectedCapacity / (1 << bitBase)) + 1) << bitBase;
     }
 
 

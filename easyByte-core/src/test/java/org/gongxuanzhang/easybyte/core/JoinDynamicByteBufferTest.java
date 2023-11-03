@@ -2,22 +2,81 @@ package org.gongxuanzhang.easybyte.core;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 
 class JoinDynamicByteBufferTest {
 
+
     @Test
-    void testPutVastData() {
-        DynamicByteBuffer byteBuffer = DynamicByteBuffer.open();
-        byte[] data = new byte[1000000];
-        Arrays.fill(data, (byte) 2);
-        for (byte datum : data) {
+    void testPutVastDataByteOneByOne() {
+        DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+        byte[] bytes = byteArrayData();
+        for (byte datum : bytes) {
             byteBuffer.put(datum);
         }
-        assertArrayEquals(data,byteBuffer.toBytes());
+        assertArrayEquals(bytes, byteBuffer.toBytes());
+    }
+
+    @Test
+    void testPutVastDataShortOneByOne() {
+        DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+        byte[] bytes = byteArrayData();
+        for (byte datum : bytes) {
+            byteBuffer.put(datum);
+        }
+        assertArrayEquals(bytes, byteBuffer.toBytes());
+    }
+
+    @Test
+    void testPutVastDataBytes() {
+        DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+        byte[] bytes = byteArrayData();
+        byteBuffer.put(bytes);
+        assertArrayEquals(bytes, byteBuffer.toBytes());
+    }
+
+    @Test
+    void testReadByteArrayData1() {
+        DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+        byte[] bytes = byteArrayData();
+        byteBuffer.put(bytes);
+        assertArrayEquals(bytes, byteBuffer.getLength(bytes.length));
+    }
+
+    @Test
+    void testReadByteArrayData2() {
+        DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+        byte[] bytes = byteArrayData();
+        byteBuffer.put(bytes);
+        byte[] test = new byte[bytes.length];
+        byteBuffer.get(test);
+        assertArrayEquals(bytes, test);
+    }
+
+
+    private byte[] byteArrayData() {
+        byte[] data = new byte[1000000];
+        new TestSupportRandom().nextBytes(data);
+        return data;
+    }
+
+    private short[] shortArrayData() {
+        short[] array = new short[1000000];
+        new TestSupportRandom().nextShorts(array);
+        return array;
+    }
+
+    private int[] intArrayData() {
+        int[] array = new int[1000000];
+        new TestSupportRandom().nextInts(array);
+        return array;
+    }
+
+    private long[] longArrayData() {
+        long[] array = new long[1000000];
+        new TestSupportRandom().nextLongs(array);
+        return array;
     }
 
 }
