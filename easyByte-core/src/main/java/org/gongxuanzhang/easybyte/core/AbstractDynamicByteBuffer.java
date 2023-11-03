@@ -1,13 +1,13 @@
 package org.gongxuanzhang.easybyte.core;
 
-import org.gongxuanzhang.easybyte.core.environment.DefaultEnvironment;
-import org.gongxuanzhang.easybyte.core.exception.EncodeException;
+import org.gongxuanzhang.easybyte.core.converter.read.StringReadConverter;
+import org.gongxuanzhang.easybyte.core.converter.write.StringWriteConverter;
 import org.gongxuanzhang.easybyte.core.tool.TypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -209,13 +209,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
         if (s == null || s.isEmpty()) {
             return appendInt(0);
         }
-        return appendString(s, string -> {
-            try {
-                return string.getBytes(getProperty(DefaultEnvironment.STRING_CHARSET.toString()));
-            } catch (UnsupportedEncodingException e) {
-                throw new EncodeException();
-            }
-        });
+        return appendString(s, StringWriteConverter.charset(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -245,15 +239,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
             return null;
         }
         byte[] stringBytes = getLength(stringLength);
-        ReadConverter<String> convert = bytes -> {
-            String charset = getProperty(DefaultEnvironment.STRING_CHARSET.toString());
-            try {
-                return new String(bytes, charset);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        };
-        return convert.toObject(stringBytes);
+        return StringReadConverter.charset(StandardCharsets.UTF_8).toObject(stringBytes);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package org.gongxuanzhang.easybyte.core.environment;
 
+import org.gongxuanzhang.easybyte.core.ReadConverter;
+import org.gongxuanzhang.easybyte.core.WriteConverter;
+
 /**
  * Applies to global configuration
  * it is the last item in the configuration

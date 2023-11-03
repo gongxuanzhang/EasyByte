@@ -48,7 +48,7 @@ class TestSupportRandom extends Random {
     }
 
     public String nextString(int length) {
-        if(length == 0){
+        if (length == 0) {
             return null;
         }
         StringBuilder stringBuilder = new StringBuilder();
@@ -58,6 +58,10 @@ class TestSupportRandom extends Random {
         }
         stringBuilder.append(UUID.randomUUID().toString().replaceAll("-", ""), 0, length % UUID_LENGTH);
         return stringBuilder.toString();
+    }
+
+    public String nextRandomLengthString(int maxLength) {
+        return nextString(nextInt(maxLength));
     }
 
 

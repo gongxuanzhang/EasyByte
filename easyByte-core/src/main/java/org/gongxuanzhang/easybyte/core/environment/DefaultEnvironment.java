@@ -10,11 +10,7 @@ package org.gongxuanzhang.easybyte.core.environment;
  * @author gongxuanzhangmelt@gmail.com
  **/
 public enum DefaultEnvironment {
-
-    /**
-     * string convert charset
-     **/
-    STRING_CHARSET("utf-8");
+    ;
 
 
     private final String defaultValue;

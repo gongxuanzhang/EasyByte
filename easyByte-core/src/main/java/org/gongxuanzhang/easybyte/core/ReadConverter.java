@@ -9,7 +9,7 @@ public interface ReadConverter<V> {
     /**
      * convert object from byte array
      *
-     * @param bytes from buffer
+     * @param bytes from buffer not null
      * @return maybe null
      **/
     V toObject(byte[] bytes);
