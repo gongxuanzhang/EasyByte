@@ -34,7 +34,7 @@ public interface ReferenceByteBuffer extends ConvertRegister {
      * @param convert special convert
      * @return this
      **/
-    <K> ReferenceByteBuffer putObject(K o, WriteConverter<K> convert);
+    <K> ReferenceByteBuffer appendObject(K o, WriteConverter<K> convert);
 
     /**
      * put a object in buffer
@@ -43,6 +43,6 @@ public interface ReferenceByteBuffer extends ConvertRegister {
      * @param o object
      * @return this
      **/
-    ReferenceByteBuffer putObject(Object o);
+    ReferenceByteBuffer appendObject(Object o);
 
 }

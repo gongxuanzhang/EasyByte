@@ -9,9 +9,15 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * different from {@link java.nio.ByteBuffer}, it can dynamically capacity.
+ * Like {@link  ByteBuffer}, but it can dynamically capacity.
  * <p>
  * only sequential put is supported, so it is not suitable for random access.
+ * <p>
+ * All methods prefixed with append that append element at the end of the buffer.
+ * Buffer capacity will extended when  buffer remain less than element length.
+ * <p>
+ * This interface specifies read and append are completely independent.
+ * Additionally,the interface is not thread-safe.
  *
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
@@ -21,6 +27,8 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
 
     /**
      * get a dynamicByteBuffer instance,similar to {@link ByteBuffer#allocate(int)}
+     *
+     * @return new dynamicByteBuffer
      **/
     static DynamicByteBuffer allocate() {
         return new JoinDynamicByteBuffer();
@@ -31,6 +39,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * get a dynamicByteBuffer instance with config,similar to {@link ByteBuffer#allocate(int)}
      *
      * @param config session config
+     * @return new dynamicByteBuffer
      **/
     static DynamicByteBuffer allocate(ObjectConfig config) {
         return new JoinDynamicByteBuffer(config);
@@ -38,6 +47,9 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
 
     /**
      * wrap a byte array into buffer,similar to {@link ByteBuffer#wrap(byte[])}
+     *
+     * @param bytes The array that will back this buffer
+     * @return new dynamicByteBuffer contain bytes
      **/
     static DynamicByteBuffer wrap(byte[] bytes) {
         return new JoinDynamicByteBuffer(bytes);
@@ -45,6 +57,10 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
 
     /**
      * wrap a byte array into buffer with config,similar to {@link ByteBuffer#wrap(byte[])}
+     *
+     * @param bytes  The array that will back this buffer
+     * @param config config
+     * @return new dynamicByteBuffer contain bytes
      **/
     static DynamicByteBuffer wrap(byte[] bytes, ObjectConfig config) {
         return new JoinDynamicByteBuffer(bytes, config);
@@ -57,7 +73,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param b a byte
      * @return this
      **/
-    DynamicByteBuffer put(byte b);
+    DynamicByteBuffer append(byte b);
 
 
     /**
@@ -66,7 +82,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param bytes byte array
      * @return this
      **/
-    DynamicByteBuffer put(byte[] bytes);
+    DynamicByteBuffer append(byte[] bytes);
 
     /**
      * put a short,similar to {@link ByteBuffer#putShort(short)}
@@ -74,7 +90,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param s a short
      * @return this
      **/
-    DynamicByteBuffer putShort(short s);
+    DynamicByteBuffer appendShort(short s);
 
     /**
      * put a int,similar to {@link ByteBuffer#putInt(int)}
@@ -82,7 +98,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param i a int
      * @return this
      **/
-    DynamicByteBuffer putInt(int i);
+    DynamicByteBuffer appendInt(int i);
 
 
     /**
@@ -91,7 +107,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param l a long
      * @return this
      **/
-    DynamicByteBuffer putLong(long l);
+    DynamicByteBuffer appendLong(long l);
 
     /**
      * put a float,similar to {@link ByteBuffer#putFloat(float)}
@@ -99,7 +115,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param f a float
      * @return this
      **/
-    DynamicByteBuffer putFloat(float f);
+    DynamicByteBuffer appendFloat(float f);
 
     /**
      * put a double,similar to {@link ByteBuffer#putDouble(double)}
@@ -107,7 +123,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param d a double
      * @return this
      **/
-    DynamicByteBuffer putDouble(double d);
+    DynamicByteBuffer appendDouble(double d);
 
     /**
      * put a char,similar to {@link ByteBuffer#putChar(char)}
@@ -115,7 +131,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param c a char
      * @return this
      **/
-    DynamicByteBuffer putChar(char c);
+    DynamicByteBuffer appendChar(char c);
 
     /**
      * put a boolean as byte
@@ -123,7 +139,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
      * @param bool a boolean
      * @return this
      **/
-    DynamicByteBuffer putBoolean(boolean bool);
+    DynamicByteBuffer appendBoolean(boolean bool);
 
     /**
      * Read a byte from the buffer and advance the position, similar to {@link ByteBuffer#get()}.
@@ -201,71 +217,71 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
     /**
      * limit return type is {@link DynamicByteBuffer}
      *
-     * @param collection {@link CollectionByteBuffer#putCollection(Collection)}
+     * @param collection {@link CollectionByteBuffer#appendCollection(Collection)}
      * @return this
      **/
     @Override
-    DynamicByteBuffer putCollection(Collection<?> collection);
+    DynamicByteBuffer appendCollection(Collection<?> collection);
 
     /**
      * limit return type is {@link DynamicByteBuffer}
      *
-     * @param collection {@link CollectionByteBuffer#putCollection(Collection, WriteConverter)}
-     * @param convert    {@link CollectionByteBuffer#putCollection(Collection, WriteConverter)}
+     * @param collection {@link CollectionByteBuffer#appendCollection(Collection, WriteConverter)}
+     * @param convert    {@link CollectionByteBuffer#appendCollection(Collection, WriteConverter)}
      * @return this
      **/
     @Override
-    <V> DynamicByteBuffer putCollection(Collection<V> collection, WriteConverter<V> convert);
+    <V> DynamicByteBuffer appendCollection(Collection<V> collection, WriteConverter<V> convert);
 
     /**
      * limit return type is {@link DynamicByteBuffer}
      *
-     * @param map {@link MapByteBuffer#putMap(Map)}
+     * @param map {@link MapByteBuffer#appendMap(Map)}
      * @return this
      **/
     @Override
-    DynamicByteBuffer putMap(Map<?, ?> map);
+    DynamicByteBuffer appendMap(Map<?, ?> map);
 
     /**
      * limit return type is {@link DynamicByteBuffer}
      *
-     * @param map            {@link MapByteBuffer#putMap(Map, WriteConverter, WriteConverter)}
-     * @param keyConverter   {@link MapByteBuffer#putMap(Map, WriteConverter, WriteConverter)}
-     * @param valueConverter {@link MapByteBuffer#putMap(Map, WriteConverter, WriteConverter)}
+     * @param map            {@link MapByteBuffer#appendMap(Map, WriteConverter, WriteConverter)}
+     * @param keyConverter   {@link MapByteBuffer#appendMap(Map, WriteConverter, WriteConverter)}
+     * @param valueConverter {@link MapByteBuffer#appendMap(Map, WriteConverter, WriteConverter)}
      * @return this
      **/
     @Override
-    <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConverter<K> keyConverter, WriteConverter<V> valueConverter);
+    <K, V> MapByteBuffer appendMap(Map<K, V> map, WriteConverter<K> keyConverter, WriteConverter<V> valueConverter);
 
     /**
      * limit return type is {@link DynamicByteBuffer}
      *
-     * @param map            {@link MapByteBuffer#putMap(Map, WriteConverter)}
-     * @param valueConverter {@link MapByteBuffer#putMap(Map, WriteConverter)}
+     * @param map            {@link MapByteBuffer#appendMap(Map, WriteConverter)}
+     * @param valueConverter {@link MapByteBuffer#appendMap(Map, WriteConverter)}
      * @return this
      **/
     @Override
-    <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConverter<V> valueConverter);
+    <K, V> MapByteBuffer appendMap(Map<K, V> map, WriteConverter<V> valueConverter);
 
 
     /**
      * limit return type is {@link DynamicByteBuffer}
      *
-     * @param o {@link ReferenceByteBuffer#putObject(Object)}
+     * @param o {@link ReferenceByteBuffer#appendObject(Object)}
      * @return this
      **/
     @Override
-    DynamicByteBuffer putObject(Object o);
+    DynamicByteBuffer appendObject(Object o);
 
     /**
      * limit return type is {@link DynamicByteBuffer}
      *
-     * @param object    {@link ReferenceByteBuffer#putObject(Object, WriteConverter)}
-     * @param converter {@link ReferenceByteBuffer#putObject(Object, WriteConverter)}
+     * @param object    {@link ReferenceByteBuffer#appendObject(Object, WriteConverter)}
+     * @param converter {@link ReferenceByteBuffer#appendObject(Object, WriteConverter)}
      * @return this
      **/
     @Override
-    <K> DynamicByteBuffer putObject(K object, WriteConverter<K> converter);
+    <K> DynamicByteBuffer appendObject(K object, WriteConverter<K> converter);
 
 
 }

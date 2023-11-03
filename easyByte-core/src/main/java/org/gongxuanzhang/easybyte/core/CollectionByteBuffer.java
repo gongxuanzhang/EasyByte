@@ -14,7 +14,7 @@ import java.util.List;
 public interface CollectionByteBuffer extends ConvertRegister {
 
     /**
-     * put a collection
+     * append a collection
      * first put collection size and then put collection item 1 size item 1 byte item N size item N byte like follows
      * ┌──────────┬──────┬─────┬─────┬──────┐
      * │collection│item1 │item1│itemN│itemN │
@@ -29,20 +29,20 @@ public interface CollectionByteBuffer extends ConvertRegister {
      * <p>
      * if neither convert nor wrapper can be found,an {@link ConverterNotFoundException} will be throw
      *
-     * @param collection use for put
+     * @param collection use for append
      * @return this
      **/
-    DynamicByteBuffer putCollection(Collection<?> collection);
+    DynamicByteBuffer appendCollection(Collection<?> collection);
 
     /**
      * specify a converter to convert item
-     * {@link this#putCollection(Collection)}
+     * {@link this#appendCollection(Collection)}
      *
      * @param collection a collection
      * @param convert    specify convert
      * @return this
      **/
-    <V> DynamicByteBuffer putCollection(Collection<V> collection, WriteConverter<V> convert);
+    <V> DynamicByteBuffer appendCollection(Collection<V> collection, WriteConverter<V> convert);
 
 
     /**
@@ -53,7 +53,7 @@ public interface CollectionByteBuffer extends ConvertRegister {
      *
      * @param clazz expect item class
      * @return list
-     * @see CollectionByteBuffer#putCollection(Collection)
+     * @see CollectionByteBuffer#appendCollection(Collection)
      **/
     <V> List<V> getCollection(Class<V> clazz);
 
@@ -62,7 +62,7 @@ public interface CollectionByteBuffer extends ConvertRegister {
      *
      * @param convert not null
      * @return list {@link this#getCollection(Class)}
-     * @see CollectionByteBuffer#putCollection(Collection)
+     * @see CollectionByteBuffer#appendCollection(Collection)
      **/
     <V> List<V> getCollection(ReadConverter<V> convert);
 }

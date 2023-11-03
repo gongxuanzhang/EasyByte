@@ -4,6 +4,7 @@ import org.gongxuanzhang.easybyte.core.tool.TypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.VarHandle;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,12 +24,17 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
     protected volatile ByteBuffer delegateBuffer;
 
+
+    protected volatile int readPosition = 0;
+
+
     protected AbstractDynamicByteBuffer() {
         delegateBuffer = ByteBuffer.allocate(16);
     }
 
     protected AbstractDynamicByteBuffer(byte[] bytes) {
         delegateBuffer = ByteBuffer.wrap(bytes);
+        this.delegateBuffer.limit(bytes.length);
     }
 
 
@@ -61,7 +67,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
     }
 
     @Override
-    public DynamicByteBuffer put(byte b) {
+    public DynamicByteBuffer append(byte b) {
         checkLength(Byte.BYTES);
         this.delegateBuffer.put(b);
         return this;
@@ -69,14 +75,14 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
 
     @Override
-    public DynamicByteBuffer put(byte[] bytes) {
+    public DynamicByteBuffer append(byte[] bytes) {
         checkLength(bytes.length);
         this.delegateBuffer.put(bytes);
         return this;
     }
 
     @Override
-    public DynamicByteBuffer putShort(short s) {
+    public DynamicByteBuffer appendShort(short s) {
         checkLength(Short.BYTES);
         this.delegateBuffer.putShort(s);
         return this;
@@ -84,88 +90,105 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
 
     @Override
-    public DynamicByteBuffer putInt(int i) {
+    public DynamicByteBuffer appendInt(int i) {
         checkLength(Integer.BYTES);
         this.delegateBuffer.putInt(i);
         return this;
     }
 
     @Override
-    public DynamicByteBuffer putLong(long l) {
+    public DynamicByteBuffer appendLong(long l) {
         checkLength(Long.BYTES);
         this.delegateBuffer.putLong(l);
         return this;
     }
 
     @Override
-    public DynamicByteBuffer putFloat(float f) {
+    public DynamicByteBuffer appendFloat(float f) {
         checkLength(Float.BYTES);
         this.delegateBuffer.putFloat(f);
         return this;
     }
 
     @Override
-    public DynamicByteBuffer putDouble(double d) {
+    public DynamicByteBuffer appendDouble(double d) {
         checkLength(Double.BYTES);
         this.delegateBuffer.putDouble(d);
         return this;
     }
 
     @Override
-    public DynamicByteBuffer putChar(char c) {
+    public DynamicByteBuffer appendChar(char c) {
         checkLength(Character.BYTES);
         this.delegateBuffer.putChar(c);
         return this;
     }
 
     @Override
-    public DynamicByteBuffer putBoolean(boolean bool) {
+    public DynamicByteBuffer appendBoolean(boolean bool) {
         if (bool) {
-            return this.put((byte) 1);
+            return this.append((byte) 1);
         }
-        return this.put((byte) 0);
+        return this.append((byte) 0);
     }
 
 
     @Override
     public byte get() {
-        return this.delegateBuffer.get();
+        byte result = this.delegateBuffer.get(readPosition);
+        offsetReadPosition(Byte.BYTES);
+        return result;
     }
 
     @Override
     public void get(byte[] container) {
+        this.delegateBuffer.position(this.readPosition);
         this.delegateBuffer.get(container);
+        offsetReadPosition(container.length);
+        this.delegateBuffer.position(this.delegateBuffer.limit());
     }
 
 
     @Override
     public char getChar() {
-        return delegateBuffer.getChar();
+        char result = delegateBuffer.getChar(readPosition);
+        offsetReadPosition(Character.BYTES);
+        return result;
     }
 
     @Override
     public short getShort() {
-        return delegateBuffer.getShort();
+        short result = delegateBuffer.getShort(readPosition);
+        offsetReadPosition(Short.BYTES);
+        return result;
     }
 
     @Override
     public int getInt() {
-        return delegateBuffer.getInt();
+        int result = delegateBuffer.getInt(readPosition);
+        offsetReadPosition(Integer.BYTES);
+        return result;
     }
 
     @Override
     public long getLong() {
-        return delegateBuffer.getLong();
+        long result = delegateBuffer.getLong(readPosition);
+        offsetReadPosition(Long.BYTES);
+        return result;
     }
 
     @Override
     public float getFloat() {
-        return delegateBuffer.getFloat();
+        float result = delegateBuffer.getFloat(readPosition);
+        offsetReadPosition(Float.BYTES);
+        return result;
     }
 
     @Override
     public double getDouble() {
-        return delegateBuffer.getDouble();
+        double result = delegateBuffer.getDouble(readPosition);
+        offsetReadPosition(Double.BYTES);
+        return result;
     }
 
     @Override
@@ -256,9 +279,9 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public DynamicByteBuffer putMap(Map<?, ?> map) {
+    public DynamicByteBuffer appendMap(Map<?, ?> map) {
         if (map == null || map.isEmpty()) {
-            return this.putInt(0);
+            return this.appendInt(0);
         }
         WriteConverter keyConverter = null;
         WriteConverter valueConverter = null;
@@ -269,50 +292,50 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
                 keyConverter = findWriteConverter(key.getClass());
             }
             byte[] keyBytes = keyConverter.toBytes(key);
-            putInt(keyBytes.length);
-            put(keyBytes);
+            appendInt(keyBytes.length);
+            append(keyBytes);
             Object value = entry.getValue();
             if (value == null) {
-                putInt(0);
+                appendInt(0);
                 continue;
             }
             if (valueConverter == null) {
                 valueConverter = findWriteConverter(value.getClass());
             }
             byte[] valueBytes = valueConverter.toBytes(value);
-            putInt(valueBytes.length);
-            put(valueBytes);
+            appendInt(valueBytes.length);
+            append(valueBytes);
         }
         return this;
     }
 
     @Override
-    public <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConverter<K> keyConverter,
-                                       WriteConverter<V> valueConverter) {
+    public <K, V> MapByteBuffer appendMap(Map<K, V> map, WriteConverter<K> keyConverter,
+                                          WriteConverter<V> valueConverter) {
         if (map == null || map.isEmpty()) {
-            return putInt(0);
+            return appendInt(0);
         }
-        putInt(map.size());
+        appendInt(map.size());
         map.forEach((k, v) -> {
             byte[] keyBytes = keyConverter.toBytes(k);
-            putInt(keyBytes.length);
-            put(keyBytes);
+            appendInt(keyBytes.length);
+            append(keyBytes);
             if (v == null) {
-                putInt(0);
+                appendInt(0);
                 return;
             }
             byte[] valueBytes = valueConverter.toBytes(v);
-            putInt(valueBytes.length);
-            put(valueBytes);
+            appendInt(valueBytes.length);
+            append(valueBytes);
         });
         return this;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <K, V> MapByteBuffer putMap(Map<K, V> map, WriteConverter<V> valueConverter) {
+    public <K, V> MapByteBuffer appendMap(Map<K, V> map, WriteConverter<V> valueConverter) {
         if (map == null || map.isEmpty()) {
-            return this.putInt(0);
+            return this.appendInt(0);
         }
         WriteConverter<K> keyConverter = null;
         for (Map.Entry<K, V> entry : map.entrySet()) {
@@ -322,22 +345,22 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
                 keyConverter = findWriteConverter((Class<K>) key.getClass());
             }
             byte[] keyBytes = keyConverter.toBytes(key);
-            putInt(keyBytes.length);
-            put(keyBytes);
+            appendInt(keyBytes.length);
+            append(keyBytes);
             V value = entry.getValue();
             if (value == null) {
-                putInt(0);
+                appendInt(0);
                 continue;
             }
             byte[] valueBytes = valueConverter.toBytes(value);
-            putInt(valueBytes.length);
-            put(valueBytes);
+            appendInt(valueBytes.length);
+            append(valueBytes);
         }
         return this;
     }
 
     /**
-     * implementation that follow the principle of {@link CollectionByteBuffer#putCollection(Collection)}
+     * implementation that follow the principle of {@link CollectionByteBuffer#appendCollection(Collection)}
      *
      * @param clazz {@link CollectionByteBuffer#getCollection(Class)}
      * @return an ArrayList
@@ -350,7 +373,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
     }
 
     /**
-     * implementation that follow the principle of {@link CollectionByteBuffer#putCollection(Collection)}
+     * implementation that follow the principle of {@link CollectionByteBuffer#appendCollection(Collection)}
      *
      * @param convert {@link CollectionByteBuffer#getCollection(ReadConverter)}
      * @return an ArrayList
@@ -371,25 +394,25 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public DynamicByteBuffer putCollection(Collection<?> collection) {
+    public DynamicByteBuffer appendCollection(Collection<?> collection) {
         if (collection == null || collection.isEmpty()) {
-            return putInt(0);
+            return appendInt(0);
         }
         Class<?> genericType = TypeUtils.getFirstGenericType(collection.getClass());
         WriteConverter writeConvert = findWriteConverter(genericType);
-        return putCollection(collection, writeConvert);
+        return this.appendCollection(collection, writeConvert);
     }
 
     @Override
-    public <V> DynamicByteBuffer putCollection(Collection<V> collection, WriteConverter<V> convert) {
+    public <V> DynamicByteBuffer appendCollection(Collection<V> collection, WriteConverter<V> convert) {
         if (collection == null || collection.isEmpty()) {
-            return putInt(0);
+            return appendInt(0);
         }
-        putInt(collection.size());
+        appendInt(collection.size());
         collection.forEach(item -> {
             byte[] itemBytes = convert.toBytes(item);
-            putInt(itemBytes.length);
-            put(itemBytes);
+            appendInt(itemBytes.length);
+            append(itemBytes);
         });
         return this;
     }
@@ -397,16 +420,16 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public DynamicByteBuffer putObject(Object o) {
+    public DynamicByteBuffer appendObject(Object o) {
         WriteConverter<?> writeConvert = findWriteConverter(o.getClass());
-        return this.putObject(o, (WriteConverter) writeConvert);
+        return this.appendObject(o, (WriteConverter) writeConvert);
     }
 
     @Override
-    public <K> DynamicByteBuffer putObject(K object, WriteConverter<K> converter) {
+    public <K> DynamicByteBuffer appendObject(K object, WriteConverter<K> converter) {
         byte[] objectBytes = converter.toBytes(object);
-        putInt(objectBytes.length);
-        put(objectBytes);
+        appendInt(objectBytes.length);
+        append(objectBytes);
         return this;
     }
 
@@ -414,5 +437,9 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
     @Override
     public byte[] toBytes() {
         return Arrays.copyOf(this.delegateBuffer.array(), this.delegateBuffer.position());
+    }
+
+    protected void offsetReadPosition(int offset) {
+        this.readPosition += offset;
     }
 }
