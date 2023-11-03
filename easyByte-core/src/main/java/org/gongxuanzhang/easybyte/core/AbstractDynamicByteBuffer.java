@@ -1,10 +1,12 @@
 package org.gongxuanzhang.easybyte.core;
 
+import org.gongxuanzhang.easybyte.core.environment.DefaultEnvironment;
+import org.gongxuanzhang.easybyte.core.exception.EncodeException;
 import org.gongxuanzhang.easybyte.core.tool.TypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.VarHandle;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +26,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
     protected volatile ByteBuffer delegateBuffer;
 
-
-    protected volatile int readPosition = 0;
+    protected int readPosition = 0;
 
 
     protected AbstractDynamicByteBuffer() {
@@ -48,7 +49,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
     protected abstract int newCapacity(int elementLength);
 
     /**
-     * before put element should check element length.
+     * before append element should check element length.
      *
      * @param elementLength element length for added
      **/
@@ -201,6 +202,58 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
     @Override
     public boolean getBoolean() {
         return get() != 0;
+    }
+
+    @Override
+    public DynamicByteBuffer appendString(String s) {
+        if (s == null || s.isEmpty()) {
+            return appendInt(0);
+        }
+        return appendString(s, string -> {
+            try {
+                return string.getBytes(getProperty(DefaultEnvironment.STRING_CHARSET.toString()));
+            } catch (UnsupportedEncodingException e) {
+                throw new EncodeException();
+            }
+        });
+    }
+
+    @Override
+    public DynamicByteBuffer appendString(String s, WriteConverter<String> convert) {
+        if (s == null || s.isEmpty()) {
+            return appendInt(0);
+        }
+        byte[] stringBytes = convert.toBytes(s);
+        appendInt(stringBytes.length);
+        return append(stringBytes);
+    }
+
+    @Override
+    public String getString(ReadConverter<String> convert) {
+        int stringLength = getInt();
+        if (stringLength == 0) {
+            return null;
+        }
+        byte[] length = getLength(stringLength);
+        return convert.toObject(length);
+    }
+
+    @Override
+    public String getString() {
+        int stringLength = getInt();
+        if (stringLength == 0) {
+            return null;
+        }
+        byte[] stringBytes = getLength(stringLength);
+        ReadConverter<String> convert = bytes -> {
+            String charset = getProperty(DefaultEnvironment.STRING_CHARSET.toString());
+            try {
+                return new String(bytes, charset);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        return convert.toObject(stringBytes);
     }
 
     @Override

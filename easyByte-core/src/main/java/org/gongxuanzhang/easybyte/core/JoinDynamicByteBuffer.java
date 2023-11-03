@@ -105,4 +105,32 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
         return convert;
     }
 
+    @Override
+    public void setProperty(String key, String value) {
+        if (this.objectConfig == null) {
+            this.objectConfig = new ObjectConfig();
+        }
+        this.objectConfig.setProperty(key, value);
+    }
+
+    @Override
+    public String getProperty(String key) {
+        if (this.objectConfig == null) {
+            return this.globalConfig.getProperty(key);
+        }
+        String value = this.objectConfig.getProperty(key);
+        if (value != null) {
+            return value;
+        }
+        return this.globalConfig.getProperty(key);
+    }
+
+    @Override
+    public String getProperty(String key, String defaultValue) {
+        String value = getProperty(key);
+        if (value != null) {
+            return value;
+        }
+        return defaultValue;
+    }
 }

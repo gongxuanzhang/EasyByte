@@ -3,7 +3,7 @@ package org.gongxuanzhang.easybyte.core;
 import org.gongxuanzhang.easybyte.core.environment.ConvertRegister;
 
 /**
- * can put and get object.
+ * can append and get object.
  *
  * @author gongxuanzhangmelt@gmail.com
  **/
@@ -27,7 +27,7 @@ public interface ReferenceByteBuffer extends ConvertRegister {
     <K> K getObject(Class<K> clazz);
 
     /**
-     * put a object in buffer
+     * append a object in buffer
      * special convert
      *
      * @param o       object
@@ -37,7 +37,7 @@ public interface ReferenceByteBuffer extends ConvertRegister {
     <K> ReferenceByteBuffer appendObject(K o, WriteConverter<K> convert);
 
     /**
-     * put a object in buffer
+     * append a object in buffer
      * find convert by
      *
      * @param o object

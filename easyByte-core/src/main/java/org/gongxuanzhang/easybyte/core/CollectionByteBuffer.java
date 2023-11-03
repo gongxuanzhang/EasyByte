@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * can put and get collection.
+ * can append and get collection.
  *
  * @author gongxuanzhangmelt@gmail.com
  **/
@@ -15,14 +15,14 @@ public interface CollectionByteBuffer extends ConvertRegister {
 
     /**
      * append a collection
-     * first put collection size and then put collection item 1 size item 1 byte item N size item N byte like follows
+     * first append collection size and then append collection item 1 size item 1 byte item N size item N byte like follows
      * ┌──────────┬──────┬─────┬─────┬──────┐
      * │collection│item1 │item1│itemN│itemN │
      * │   size   │ size │ byte│ size│ byte │
      * └──────────┴──────┴─────┴─────┴──────┘
      * <p>
-     * the order of puts depends on the order of traversal
-     * item in collection will converted to byte array for put buffer
+     * the order of appends depends on the order of traversal
+     * item in collection will converted to byte array for append to buffer
      * primitive type and packing type will invoke corresponding method
      * reference type will find convert or wrapper to invoke method
      * <p>

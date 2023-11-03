@@ -1,6 +1,6 @@
 package org.gongxuanzhang.easybyte.core;
 
-import org.gongxuanzhang.easybyte.core.environment.ConvertRegister;
+import org.gongxuanzhang.easybyte.core.environment.EasyByteConfiguration;
 import org.gongxuanzhang.easybyte.core.environment.ObjectConfig;
 
 import java.nio.BufferUnderflowException;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Like {@link  ByteBuffer}, but it can dynamically capacity.
  * <p>
- * only sequential put is supported, so it is not suitable for random access.
+ * only sequential put is supported,called append, so it is not suitable for random access.
  * <p>
  * All methods prefixed with append that append element at the end of the buffer.
  * Buffer capacity will extended when  buffer remain less than element length.
@@ -21,8 +21,8 @@ import java.util.Map;
  *
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, ReferenceByteBuffer, ConvertRegister,
-        ByteWrapper {
+public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, StringByteBuffer, ReferenceByteBuffer
+        , EasyByteConfiguration, ByteWrapper {
 
 
     /**
@@ -68,7 +68,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
 
 
     /**
-     * put a byte,similar to {@link ByteBuffer#put(byte)}.
+     * append a byte,similar to {@link ByteBuffer#put(byte)}.
      *
      * @param b a byte
      * @return this
@@ -77,7 +77,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
 
 
     /**
-     * put a byte array ,similar to {@link ByteBuffer#put(byte[])}
+     * append a byte array ,similar to {@link ByteBuffer#put(byte[])}
      *
      * @param bytes byte array
      * @return this
@@ -85,7 +85,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
     DynamicByteBuffer append(byte[] bytes);
 
     /**
-     * put a short,similar to {@link ByteBuffer#putShort(short)}
+     * append a short,similar to {@link ByteBuffer#putShort(short)}
      *
      * @param s a short
      * @return this
@@ -93,7 +93,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
     DynamicByteBuffer appendShort(short s);
 
     /**
-     * put a int,similar to {@link ByteBuffer#putInt(int)}
+     * append a int,similar to {@link ByteBuffer#putInt(int)}
      *
      * @param i a int
      * @return this
@@ -102,7 +102,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
 
 
     /**
-     * put a long ,similar to {@link ByteBuffer#putLong(long)}
+     * append a long ,similar to {@link ByteBuffer#putLong(long)}
      *
      * @param l a long
      * @return this
@@ -110,7 +110,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
     DynamicByteBuffer appendLong(long l);
 
     /**
-     * put a float,similar to {@link ByteBuffer#putFloat(float)}
+     * append a float,similar to {@link ByteBuffer#putFloat(float)}
      *
      * @param f a float
      * @return this
@@ -118,7 +118,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
     DynamicByteBuffer appendFloat(float f);
 
     /**
-     * put a double,similar to {@link ByteBuffer#putDouble(double)}
+     * append a double,similar to {@link ByteBuffer#putDouble(double)}
      *
      * @param d a double
      * @return this
@@ -126,7 +126,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
     DynamicByteBuffer appendDouble(double d);
 
     /**
-     * put a char,similar to {@link ByteBuffer#putChar(char)}
+     * append a char,similar to {@link ByteBuffer#putChar(char)}
      *
      * @param c a char
      * @return this
@@ -134,7 +134,7 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
     DynamicByteBuffer appendChar(char c);
 
     /**
-     * put a boolean as byte
+     * append a boolean as byte
      *
      * @param bool a boolean
      * @return this
@@ -283,5 +283,24 @@ public interface DynamicByteBuffer extends CollectionByteBuffer, MapByteBuffer, 
     @Override
     <K> DynamicByteBuffer appendObject(K object, WriteConverter<K> converter);
 
+
+    /**
+     * limit return type is {@link DynamicByteBuffer}
+     *
+     * @param s {@link StringByteBuffer#appendString(String)}
+     * @return this
+     **/
+    @Override
+    DynamicByteBuffer appendString(String s);
+
+    /**
+     * limit return type is {@link DynamicByteBuffer}
+     *
+     * @param s       {@link StringByteBuffer#appendString(String, WriteConverter)}
+     * @param convert {@link StringByteBuffer#appendString(String, WriteConverter)}
+     * @return this
+     **/
+    @Override
+    DynamicByteBuffer appendString(String s, WriteConverter<String> convert);
 
 }

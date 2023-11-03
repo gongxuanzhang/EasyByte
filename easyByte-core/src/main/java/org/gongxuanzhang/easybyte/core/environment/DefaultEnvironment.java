@@ -17,9 +17,14 @@ public enum DefaultEnvironment {
     STRING_CHARSET("utf-8");
 
 
-    private final String value;
+    private final String defaultValue;
 
-    DefaultEnvironment(String value) {
-        this.value = value;
+
+    DefaultEnvironment(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
     }
 }

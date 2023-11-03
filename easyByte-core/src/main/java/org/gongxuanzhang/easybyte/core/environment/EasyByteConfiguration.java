@@ -2,8 +2,7 @@ package org.gongxuanzhang.easybyte.core.environment;
 
 /**
  * easy byte configuration
- * register for wrapper
- * and so on
+ *
  *
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
@@ -25,6 +24,17 @@ public interface EasyByteConfiguration extends ConvertRegister {
      * @return maybe null
      **/
     String getProperty(String key);
+
+    /**
+     * return the property from {@link DefaultEnvironment};
+     * defaultEnvironment key have default value while never return null.
+     *
+     * @param key system config
+     * @return not null
+     **/
+    default String getProperty(DefaultEnvironment key) {
+        return getProperty(key.toString());
+    }
 
     /**
      * Return the property value, if not found, return the default value

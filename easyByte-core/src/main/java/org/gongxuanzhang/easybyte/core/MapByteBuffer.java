@@ -6,7 +6,7 @@ import org.gongxuanzhang.easybyte.core.exception.ConverterNotFoundException;
 import java.util.Map;
 
 /**
- * can put and get map.
+ * can append and get map.
  *
  * @author gongxuanzhangmelt@gmail.com
  **/
@@ -56,7 +56,7 @@ public interface MapByteBuffer extends ConvertRegister {
 
 
     /**
-     * put a map to buffer.
+     * append a map to buffer.
      * if key or value is {@link  ByteWrapper} will invoke {@link ByteWrapper#toBytes()}
      * else will find converter in register.
      * if map is not empty that easy byte will find converter by the class that first entry key and value .
@@ -71,7 +71,7 @@ public interface MapByteBuffer extends ConvertRegister {
     MapByteBuffer appendMap(Map<?, ?> map);
 
     /**
-     * put a map to buffer.
+     * append a map to buffer.
      * special key and value converter to use.
      *
      * @param map            data
@@ -82,7 +82,7 @@ public interface MapByteBuffer extends ConvertRegister {
     <K, V> MapByteBuffer appendMap(Map<K, V> map, WriteConverter<K> keyConverter, WriteConverter<V> valueConverter);
 
     /**
-     * put a map to buffer.
+     * append a map to buffer.
      * special value convert to use because generally key is common type
      *
      * @param map          data

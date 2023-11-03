@@ -125,6 +125,51 @@ class SimpleBufferTest {
         assertArrayEquals(data, actual, 0.001); // Specify a tolerance for double comparison
     }
 
+    @ParameterizedTest
+    @MethodSource("arrayLengthProvider")
+    void testReadFloat(int length) {
+        DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+        float[] data = floatArrayData(length);
+        for (float datum : data) {
+            byteBuffer.appendFloat(datum);
+        }
+        float[] actual = new float[length];
+        for (int i = 0; i < actual.length; i++) {
+            actual[i] = byteBuffer.getFloat();
+        }
+        assertArrayEquals(data, actual); // Specify a tolerance for float comparison
+    }
+
+    @ParameterizedTest
+    @MethodSource("arrayLengthProvider")
+    void testReadChar(int length) {
+        DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+        char[] data = charArrayData(length);
+        for (char datum : data) {
+            byteBuffer.appendChar(datum);
+        }
+        char[] actual = new char[length];
+        for (int i = 0; i < actual.length; i++) {
+            actual[i] = byteBuffer.getChar();
+        }
+        assertArrayEquals(data, actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource("arrayLengthProvider")
+    void testReadBoolean(int length) {
+        DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
+        boolean[] data = booleanArrayData(length);
+        for (boolean datum : data) {
+            byteBuffer.appendBoolean(datum);
+        }
+        boolean[] actual = new boolean[length];
+        for (int i = 0; i < actual.length; i++) {
+            actual[i] = byteBuffer.getBoolean();
+        }
+        assertArrayEquals(data, actual);
+    }
+
 
     private byte[] byteArrayData(int length) {
         byte[] data = new byte[length];
@@ -158,6 +203,26 @@ class SimpleBufferTest {
         return array;
     }
 
+
+    private float[] floatArrayData(int length) {
+        float[] array = new float[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = new TestSupportRandom().nextFloat();
+        }
+        return array;
+    }
+
+    private char[] charArrayData(int length) {
+        char[] array = new char[length];
+        new TestSupportRandom().nextChars(array);
+        return array;
+    }
+
+    private boolean[] booleanArrayData(int length) {
+        boolean[] array = new boolean[length];
+        new TestSupportRandom().nextBooleans(array);
+        return array;
+    }
 
     private static Stream<Arguments> arrayLengthProvider() {
         return Stream.of(

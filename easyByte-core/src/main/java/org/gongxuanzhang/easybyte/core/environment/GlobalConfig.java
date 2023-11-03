@@ -8,6 +8,12 @@ package org.gongxuanzhang.easybyte.core.environment;
  **/
 public class GlobalConfig extends BaseConfiguration {
 
+    private GlobalConfig() {
+        for (DefaultEnvironment item : DefaultEnvironment.values()) {
+            this.setProperty(item.toString(), item.getDefaultValue());
+        }
+    }
+
     private static volatile GlobalConfig INSTANCE = null;
 
     public static GlobalConfig getInstance() {
