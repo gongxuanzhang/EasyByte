@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class TypeUtilsTest {
@@ -17,11 +21,17 @@ class TypeUtilsTest {
         Type type = targetInterfaceGeneric[0];
         Assertions.assertSame(type, Integer.class);
         Type[] noneSon = TypeUtils.getTargetInterfaceGeneric(NoneSon.class, Parent.class);
-        Assertions.assertEquals(1, noneSon.length);
+        assertEquals(1, noneSon.length);
         Assertions.assertTrue(TypeVariable.class.isAssignableFrom(noneSon[0].getClass()));
-        Assertions.assertEquals(0, TypeUtils.getTargetInterfaceGeneric(None.class, Parent.class).length);
+        assertEquals(0, TypeUtils.getTargetInterfaceGeneric(None.class, Parent.class).length);
     }
 
+
+    @Test
+    void testNotSubclass(){
+        Type[] targetInterfaceGeneric = TypeUtils.getTargetInterfaceGeneric(ArrayList.class, Map.class);
+        assertEquals(0,targetInterfaceGeneric.length);
+    }
 
     private interface Parent<B> {
 

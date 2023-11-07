@@ -26,7 +26,10 @@ public class StringWriteConverter implements WriteConverter<String> {
 
     @Override
     public byte[] toBytes(String s) {
-        if (s == null || s.isEmpty()) {
+        if (s == null) {
+            return null;
+        }
+        if (s.isEmpty()) {
             return new byte[0];
         }
         return s.getBytes(this.charset);

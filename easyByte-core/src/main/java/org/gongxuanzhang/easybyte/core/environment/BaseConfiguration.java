@@ -4,6 +4,7 @@ import org.gongxuanzhang.easybyte.core.ReadConverter;
 import org.gongxuanzhang.easybyte.core.WriteConverter;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -28,6 +29,12 @@ public abstract class BaseConfiguration implements EasyByteConfiguration {
     @Override
     public String getProperty(String key, String defaultValue) {
         return propertiesMap.getOrDefault(key, defaultValue);
+    }
+
+
+    @Override
+    public void removeProperty(String key) {
+        propertiesMap.remove(key);
     }
 
     @Override
@@ -61,7 +68,12 @@ public abstract class BaseConfiguration implements EasyByteConfiguration {
     }
 
     @Override
+    public Set<String> keySet() {
+        return propertiesMap.keySet();
+    }
+
+    @Override
     public void clear() {
-        convertRegister.clear();
+        propertiesMap.clear();
     }
 }

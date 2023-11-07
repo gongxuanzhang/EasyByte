@@ -25,9 +25,12 @@ public class StringReadConverter implements ReadConverter<String> {
 
 
     @Override
-    public String toObject(byte[] bytes) {
-        if (bytes.length == 0) {
+    public String toObject(byte[] bytes, int length) {
+        if (length < 0) {
             return null;
+        }
+        if (bytes.length == 0) {
+            return "";
         }
         return new String(bytes, charset);
     }

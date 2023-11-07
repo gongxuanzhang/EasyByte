@@ -16,7 +16,7 @@ public interface ConvertRegister {
      * The types of subclasses and superclasses can coexist
      * Follow the principle of the proximity
      *
-     * @param writeConverter a writeConverter
+     * @param writeConverter a writeConverter,not allow anonymous object
      **/
     void registerWriteConverter(WriteConverter<?> writeConverter);
 
@@ -24,7 +24,7 @@ public interface ConvertRegister {
      * register a readConverter in register.
      * readConverter type duplicate result in throw {@link ConvertDuplicationException}
      *
-     * @param readConverter a writeConvert
+     * @param readConverter a readConvert not allow anonymous object
      **/
     void registerReadConverter(ReadConverter<?> readConverter);
 

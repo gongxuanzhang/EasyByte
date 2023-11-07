@@ -7,6 +7,6 @@ public class ConverterNotFoundException extends RuntimeException {
 
 
     public ConverterNotFoundException(Class<?> type) {
-        super(type.getSimpleName() + "convert does not exists");
+        super(type.getSimpleName() + " convert does not exists");
     }
 }

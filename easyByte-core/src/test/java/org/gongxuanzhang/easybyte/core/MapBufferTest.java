@@ -1,19 +1,22 @@
 package org.gongxuanzhang.easybyte.core;
 
 import org.gongxuanzhang.easybyte.core.converter.read.DummyReadNameOnlyConverter;
+import org.gongxuanzhang.easybyte.core.converter.read.StringReadConverter;
 import org.gongxuanzhang.easybyte.core.converter.write.DummyWriteNameOnlyConverter;
+import org.gongxuanzhang.easybyte.core.converter.write.StringWriteConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 class MapBufferTest {
@@ -36,18 +39,40 @@ class MapBufferTest {
     @Test
     void testSpecialConverter() {
         Map<String, Dummy> dummyMap = new HashMap<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             String name = new TestSupportRandom().nextString(32);
-            dummyMap.put(name, new Dummy(i, name));
+            if (i % 5 == 0) {
+                dummyMap.put(name, null);
+            } else {
+                dummyMap.put(name, new Dummy(i, name));
+            }
         }
+        dummyMap.put("", new Dummy());
         DynamicByteBuffer allocate = DynamicByteBuffer.allocate();
-        allocate.appendMap(dummyMap,new DummyWriteNameOnlyConverter());
+        Charset charset = StandardCharsets.ISO_8859_1;
+        DummyWriteNameOnlyConverter nameOnly = new DummyWriteNameOnlyConverter();
+        allocate.appendMap(dummyMap, nameOnly);
+        allocate.appendMap(dummyMap, StringWriteConverter.charset(charset), nameOnly);
         Map<String, Dummy> map = allocate.getMap(String.class, new DummyReadNameOnlyConverter());
-        map.forEach((name,dummy)->{
-            assertNull(dummy.getAge());
-            assertEquals(name,dummy.getName());
+        map.forEach((name, dummy) -> {
+            Dummy expect = dummyMap.get(name);
+            if (expect == null) {
+                assertNull(dummy);
+            } else {
+                assertEquals(expect.getName(), dummy.getName());
+            }
+        });
+        map = allocate.getMap(StringReadConverter.charset(charset), new DummyReadNameOnlyConverter());
+        map.forEach((name, dummy) -> {
+            Dummy expect = dummyMap.get(name);
+            if (expect == null) {
+                assertNull(dummy);
+            } else {
+                assertEquals(expect.getName(), dummy.getName());
+            }
         });
     }
+
 
     private static Stream<Arguments> arrayLengthProvider() {
         return Stream.of(

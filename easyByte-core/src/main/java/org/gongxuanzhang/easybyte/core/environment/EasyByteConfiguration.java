@@ -1,8 +1,10 @@
 package org.gongxuanzhang.easybyte.core.environment;
 
+import java.util.Map;
+import java.util.Set;
+
 /**
  * easy byte configuration
- *
  *
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
@@ -44,5 +46,18 @@ public interface EasyByteConfiguration extends ConvertRegister {
      * @return special value
      **/
     String getProperty(String key, String defaultValue);
+
+    /**
+     * remove target key
+     *
+     * @param key removed key
+     **/
+    void removeProperty(String key);
+
+    /**
+     * get key set
+     * @return like {@link Map#keySet()}
+     **/
+    Set<String> keySet();
 
 }

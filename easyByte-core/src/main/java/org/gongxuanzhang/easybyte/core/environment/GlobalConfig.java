@@ -33,6 +33,12 @@ public class GlobalConfig extends BaseConfiguration {
         surefireDynamicRead.put(String.class, () -> StringReadConverter.charset(StandardCharsets.UTF_8));
     }
 
+
+    @Override
+    public void setProperty(String key, String value) {
+        throw new UnsupportedOperationException("global config can't update");
+    }
+
     private static volatile GlobalConfig INSTANCE = null;
 
     public static GlobalConfig getInstance() {

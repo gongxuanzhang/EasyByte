@@ -33,6 +33,8 @@ class StringBufferTest {
     void testAppendEmpty(){
         DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
         byteBuffer.appendString("");
+        byteBuffer.appendString(null);
+        assertEquals("", byteBuffer.getString());
         assertNull(byteBuffer.getString());
     }
 
@@ -40,9 +42,12 @@ class StringBufferTest {
     void testAppendOtherCharset(){
         DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
         String base = "easy-byte";
-        byteBuffer.appendString(base, StringWriteConverter.charset(StandardCharsets.ISO_8859_1));
+        byteBuffer.appendString(base, StringWriteConverter.charset(StandardCharsets.ISO_8859_1))
+                .appendString(null,StringWriteConverter.charset(StandardCharsets.ISO_8859_1));
         String string = byteBuffer.getString(StringReadConverter.charset(StandardCharsets.ISO_8859_1));
         assertEquals(string,base);
+        string = byteBuffer.getString(StringReadConverter.charset(StandardCharsets.ISO_8859_1));
+        assertNull(string);
     }
 
 

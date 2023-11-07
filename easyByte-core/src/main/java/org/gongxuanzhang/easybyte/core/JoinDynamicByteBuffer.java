@@ -5,6 +5,8 @@ import org.gongxuanzhang.easybyte.core.environment.ObjectConfig;
 import org.gongxuanzhang.easybyte.core.exception.ConverterNotFoundException;
 
 import java.nio.ByteBuffer;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * delegate to {@link ByteBuffer}.
@@ -18,7 +20,6 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
     private static final int JOG = 1 << 10;
 
     private static final int STRIDE = JOG << 4;
-
 
     private final GlobalConfig globalConfig;
 
@@ -124,9 +125,8 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
     @Override
     public void clear() {
         if (this.objectConfig != null) {
-            objectConfig.clear();
+            this.objectConfig.clear();
         }
-        this.globalConfig.clear();
     }
 
     @Override
@@ -156,5 +156,28 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
             return value;
         }
         return defaultValue;
+    }
+
+
+    /**
+     * object config can't infect global config.
+     *
+     * @param key removed key
+     **/
+    @Override
+    public void removeProperty(String key) {
+        if (this.objectConfig != null) {
+            this.objectConfig.removeProperty(key);
+        }
+    }
+
+    @Override
+    public Set<String> keySet() {
+        Set<String> result = new HashSet<>();
+        if (this.objectConfig != null) {
+            result.addAll(this.objectConfig.keySet());
+        }
+        result.addAll(this.globalConfig.keySet());
+        return result;
     }
 }
