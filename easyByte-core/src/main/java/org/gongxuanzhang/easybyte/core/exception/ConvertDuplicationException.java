@@ -11,10 +11,10 @@ public class ConvertDuplicationException extends RuntimeException {
 
 
     public ConvertDuplicationException(ConvertRegister convertRegister, WriteConverter<?> convert) {
-        super(convertRegister.getClass().getSimpleName() + "has been register " + convert.getClass().getSimpleName());
+        super(convertRegister.getClass().getSimpleName() + " has been register " + convert.getClass().getSimpleName());
     }
 
     public ConvertDuplicationException(ConvertRegister convertRegister, ReadConverter<?> convert) {
-        super(convertRegister.getClass().getSimpleName() + "has been register " + convert.getClass().getSimpleName());
+        super(convertRegister.getClass().getSimpleName() + " has been register " + convert.getClass().getSimpleName());
     }
 }

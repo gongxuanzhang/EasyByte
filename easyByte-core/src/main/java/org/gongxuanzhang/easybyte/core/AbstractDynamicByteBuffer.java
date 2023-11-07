@@ -2,7 +2,6 @@ package org.gongxuanzhang.easybyte.core;
 
 import org.gongxuanzhang.easybyte.core.converter.read.StringReadConverter;
 import org.gongxuanzhang.easybyte.core.converter.write.StringWriteConverter;
-import org.gongxuanzhang.easybyte.core.tool.TypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
 
     protected AbstractDynamicByteBuffer() {
-        delegateBuffer = ByteBuffer.allocate(16);
+        delegateBuffer = ByteBuffer.allocate(256);
     }
 
     protected AbstractDynamicByteBuffer(byte[] bytes) {
@@ -322,6 +321,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
         if (map == null || map.isEmpty()) {
             return this.appendInt(0);
         }
+        this.appendInt(map.size());
         WriteConverter keyConverter = null;
         WriteConverter valueConverter = null;
         for (Map.Entry<?, ?> entry : map.entrySet()) {
@@ -341,9 +341,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
             if (valueConverter == null) {
                 valueConverter = findWriteConverter(value.getClass());
             }
-            byte[] valueBytes = valueConverter.toBytes(value);
-            appendInt(valueBytes.length);
-            append(valueBytes);
+            appendObject(value, valueConverter);
         }
         return this;
     }
@@ -363,9 +361,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
                 appendInt(0);
                 return;
             }
-            byte[] valueBytes = valueConverter.toBytes(v);
-            appendInt(valueBytes.length);
-            append(valueBytes);
+            appendObject(v, valueConverter);
         });
         return this;
     }
@@ -376,6 +372,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
         if (map == null || map.isEmpty()) {
             return this.appendInt(0);
         }
+        this.appendInt(map.size());
         WriteConverter<K> keyConverter = null;
         for (Map.Entry<K, V> entry : map.entrySet()) {
             //  key must not null
@@ -383,17 +380,13 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
             if (keyConverter == null) {
                 keyConverter = findWriteConverter((Class<K>) key.getClass());
             }
-            byte[] keyBytes = keyConverter.toBytes(key);
-            appendInt(keyBytes.length);
-            append(keyBytes);
+            appendObject(key, keyConverter);
             V value = entry.getValue();
             if (value == null) {
                 appendInt(0);
                 continue;
             }
-            byte[] valueBytes = valueConverter.toBytes(value);
-            appendInt(valueBytes.length);
-            append(valueBytes);
+            appendObject(value, valueConverter);
         }
         return this;
     }
@@ -437,9 +430,19 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
         if (collection == null || collection.isEmpty()) {
             return appendInt(0);
         }
-        Class<?> genericType = TypeUtils.getFirstGenericType(collection.getClass());
-        WriteConverter writeConvert = findWriteConverter(genericType);
-        return this.appendCollection(collection, writeConvert);
+        WriteConverter writeConvert = null;
+        appendInt(collection.size());
+        for (Object it : collection) {
+            if (it == null) {
+                appendInt(0);
+                continue;
+            }
+            if (writeConvert == null) {
+                writeConvert = findWriteConverter(it.getClass());
+            }
+            appendObject(it, writeConvert);
+        }
+        return this;
     }
 
     @Override
@@ -460,6 +463,9 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public DynamicByteBuffer appendObject(Object o) {
+        if (o instanceof ByteWrapper) {
+            return this.appendObject(o, (v) -> ((ByteWrapper) o).toBytes());
+        }
         WriteConverter<?> writeConvert = findWriteConverter(o.getClass());
         return this.appendObject(o, (WriteConverter) writeConvert);
     }

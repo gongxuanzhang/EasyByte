@@ -31,8 +31,8 @@ public abstract class BaseConfiguration implements EasyByteConfiguration {
     }
 
     @Override
-    public void registerReadConverter(WriteConverter<?> writeConverter) {
-        convertRegister.registerReadConverter(writeConverter);
+    public void registerWriteConverter(WriteConverter<?> writeConverter) {
+        convertRegister.registerWriteConverter(writeConverter);
     }
 
     @Override
@@ -48,5 +48,20 @@ public abstract class BaseConfiguration implements EasyByteConfiguration {
     @Override
     public <V> ReadConverter<V> findReadConverter(Class<V> clazz) {
         return convertRegister.findReadConverter(clazz);
+    }
+
+    @Override
+    public void removeReadConverter(Class<?> clazz) {
+        convertRegister.removeReadConverter(clazz);
+    }
+
+    @Override
+    public void removeWriteConverter(Class<?> clazz) {
+        convertRegister.removeWriteConverter(clazz);
+    }
+
+    @Override
+    public void clear() {
+        convertRegister.clear();
     }
 }

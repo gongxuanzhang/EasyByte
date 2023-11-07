@@ -18,7 +18,7 @@ public interface ConvertRegister {
      *
      * @param writeConverter a writeConverter
      **/
-    void registerReadConverter(WriteConverter<?> writeConverter);
+    void registerWriteConverter(WriteConverter<?> writeConverter);
 
     /**
      * register a readConverter in register.
@@ -32,7 +32,7 @@ public interface ConvertRegister {
     /**
      * find writeConvert by register . It is may be null
      *
-     * @param clazz class
+     * @param clazz object class  not writeConverter class
      * @return convert or null
      **/
     <V> WriteConverter<V> findWriteConverter(Class<V> clazz);
@@ -40,10 +40,32 @@ public interface ConvertRegister {
     /**
      * find ReadConverter by register . It is may be null.
      *
-     * @param clazz class
+     * @param clazz object class  not readConverter class
      * @return convert or null
      **/
     <V> ReadConverter<V> findReadConverter(Class<V> clazz);
 
+
+    /**
+     * remove read converter from register.
+     * nothing to do if not found.
+     *
+     * @param clazz object class  not readConverter class {@link ConvertRegister#findReadConverter(Class)}
+     **/
+    void removeReadConverter(Class<?> clazz);
+
+    /**
+     * remove write converter from register.
+     * nothing to do if not found.
+     *
+     * @param clazz object class  not readConverter class {@link ConvertRegister#findWriteConverter(Class)}
+     **/
+    void removeWriteConverter(Class<?> clazz);
+
+
+    /**
+     * clear the register
+     **/
+    void clear();
 
 }

@@ -66,11 +66,11 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
 
 
     @Override
-    public void registerReadConverter(WriteConverter<?> writeConverter) {
+    public void registerWriteConverter(WriteConverter<?> writeConverter) {
         if (this.objectConfig == null) {
             this.objectConfig = new ObjectConfig();
         }
-        this.objectConfig.registerReadConverter(writeConverter);
+        this.objectConfig.registerWriteConverter(writeConverter);
     }
 
     @Override
@@ -103,6 +103,30 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
             throw new ConverterNotFoundException(clazz);
         }
         return convert;
+    }
+
+    @Override
+    public void removeReadConverter(Class<?> clazz) {
+        if (this.objectConfig != null) {
+            objectConfig.removeReadConverter(clazz);
+        }
+        this.globalConfig.removeReadConverter(clazz);
+    }
+
+    @Override
+    public void removeWriteConverter(Class<?> clazz) {
+        if (this.objectConfig != null) {
+            objectConfig.removeWriteConverter(clazz);
+        }
+        this.globalConfig.removeWriteConverter(clazz);
+    }
+
+    @Override
+    public void clear() {
+        if (this.objectConfig != null) {
+            objectConfig.clear();
+        }
+        this.globalConfig.clear();
     }
 
     @Override

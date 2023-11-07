@@ -61,6 +61,9 @@ class TestSupportRandom extends Random {
     }
 
     public String nextRandomLengthString(int maxLength) {
+        if (maxLength == 0) {
+            return null;
+        }
         return nextString(nextInt(maxLength));
     }
 

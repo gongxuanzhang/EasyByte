@@ -1,5 +1,7 @@
 package org.gongxuanzhang.easybyte.core.tool;
 
+import org.gongxuanzhang.easybyte.core.ReadConverter;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -14,34 +16,26 @@ public class TypeUtils {
 
     }
 
+
     /**
-     * return first generic class if target have.
+     * if target class is subclass from interface and the interface have generic.find it.
      *
-     * @param clazz target
-     * @return maybe null
+     * @param origin         target class
+     * @param interfaceClass target interface not a class
+     * @return generic array or null
      **/
-    public static Class<?> getFirstGenericType(Class<?> clazz) {
-        Type[] typeArguments = getGenericTypes(clazz);
-        if (typeArguments.length == 0) {
-            return null;
+    public static Type[] getTargetInterfaceGeneric(Class<?> origin, Class<?> interfaceClass) {
+        Type[] genericInterfaces = origin.getGenericInterfaces();
+        for (Type genericInterface : genericInterfaces) {
+            if (genericInterface instanceof ParameterizedType) {
+                Type rawType = ((ParameterizedType) genericInterface).getRawType();
+                if (rawType == interfaceClass) {
+                    return ((ParameterizedType) genericInterface).getActualTypeArguments();
+                }
+            }
         }
-        Type firstGeneric = typeArguments[0];
-        if (firstGeneric instanceof Class) {
-            return (Class<?>) firstGeneric;
-        }
-        return null;
+        return new Type[0];
     }
-
-
-    private static Type[] getGenericTypes(Class<?> clazz) {
-        Type type = clazz.getGenericSuperclass();
-        if (!(type instanceof ParameterizedType)) {
-            return new Type[0];
-        }
-        ParameterizedType parameterizedType = (ParameterizedType) type;
-        return parameterizedType.getActualTypeArguments();
-    }
-
 
 }
 

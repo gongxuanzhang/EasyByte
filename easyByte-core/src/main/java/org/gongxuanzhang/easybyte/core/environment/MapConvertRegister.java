@@ -6,6 +6,7 @@ import org.gongxuanzhang.easybyte.core.exception.ConvertDuplicationException;
 import org.gongxuanzhang.easybyte.core.exception.GenericNotFoundException;
 import org.gongxuanzhang.easybyte.core.tool.TypeUtils;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,13 +21,13 @@ public class MapConvertRegister implements ConvertRegister {
 
 
     @Override
-    public void registerReadConverter(WriteConverter<?> writeConverter) {
+    public void registerWriteConverter(WriteConverter<?> writeConverter) {
         Class<?> convertClass = writeConverter.getClass();
-        Class<?> firstGenericType = TypeUtils.getFirstGenericType(convertClass);
-        if (firstGenericType == null) {
+        Type[] targetInterfaceGeneric = TypeUtils.getTargetInterfaceGeneric(convertClass, WriteConverter.class);
+        if (targetInterfaceGeneric.length != 1 || !(targetInterfaceGeneric[0] instanceof Class)) {
             throw new GenericNotFoundException(convertClass);
         }
-        if (this.writeConvertMap.putIfAbsent(firstGenericType, writeConverter) != null) {
+        if (this.writeConvertMap.putIfAbsent((Class<?>) targetInterfaceGeneric[0], writeConverter) != null) {
             throw new ConvertDuplicationException(this, writeConverter);
         }
     }
@@ -34,11 +35,11 @@ public class MapConvertRegister implements ConvertRegister {
     @Override
     public void registerReadConverter(ReadConverter<?> readConverter) {
         Class<?> convertClass = readConverter.getClass();
-        Class<?> firstGenericType = TypeUtils.getFirstGenericType(convertClass);
-        if (firstGenericType == null) {
+        Type[] targetInterfaceGeneric = TypeUtils.getTargetInterfaceGeneric(convertClass, ReadConverter.class);
+        if (targetInterfaceGeneric.length != 1 || !(targetInterfaceGeneric[0] instanceof Class)) {
             throw new GenericNotFoundException(convertClass);
         }
-        if (this.readConvertMap.putIfAbsent(firstGenericType, readConverter) != null) {
+        if (this.readConvertMap.putIfAbsent((Class<?>) targetInterfaceGeneric[0], readConverter) != null) {
             throw new ConvertDuplicationException(this, readConverter);
         }
     }
@@ -52,6 +53,23 @@ public class MapConvertRegister implements ConvertRegister {
     @SuppressWarnings("unchecked")
     @Override
     public <V> ReadConverter<V> findReadConverter(Class<V> clazz) {
-        return (ReadConverter<V>) writeConvertMap.get(clazz);
+        return (ReadConverter<V>) readConvertMap.get(clazz);
     }
+
+    @Override
+    public void removeReadConverter(Class<?> clazz) {
+        readConvertMap.remove(clazz);
+    }
+
+    @Override
+    public void removeWriteConverter(Class<?> clazz) {
+        writeConvertMap.remove(clazz);
+    }
+
+    @Override
+    public void clear() {
+        readConvertMap.clear();
+        writeConvertMap.clear();
+    }
+
 }

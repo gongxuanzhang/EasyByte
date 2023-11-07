@@ -4,14 +4,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class CollectionBufferTest {
@@ -19,7 +16,7 @@ class CollectionBufferTest {
 
     @ParameterizedTest
     @MethodSource("arrayLengthProvider")
-    void testPutVastString(int length, int elementMaxLength) {
+    void testAppendCollection(int length, int elementMaxLength) {
         List<String> strings = new ArrayList<>();
         TestSupportRandom testSupportRandom = new TestSupportRandom();
         for (int i = 0; i < length; i++) {
@@ -32,14 +29,16 @@ class CollectionBufferTest {
     }
 
 
+
+
     private static Stream<Arguments> arrayLengthProvider() {
         return Stream.of(
-                Arguments.of(0),
-                Arguments.of(2),
-                Arguments.of(16),
-                Arguments.of(1024),
-                Arguments.of(1024 * 8),
-                Arguments.of(1000000)
+                Arguments.of(0, new TestSupportRandom().nextInt(32)),
+                Arguments.of(2, new TestSupportRandom().nextInt(32)),
+                Arguments.of(16, new TestSupportRandom().nextInt(32)),
+                Arguments.of(1024, new TestSupportRandom().nextInt(32)),
+                Arguments.of(1024 * 8, new TestSupportRandom().nextInt(32)),
+                Arguments.of(1000000, new TestSupportRandom().nextInt(32))
         );
     }
 
