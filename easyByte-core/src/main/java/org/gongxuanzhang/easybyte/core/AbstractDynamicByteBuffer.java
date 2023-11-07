@@ -471,6 +471,10 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
         appendInt(collection.size());
         collection.forEach(item -> {
             byte[] itemBytes = convert.toBytes(item);
+            if(itemBytes == null){
+                appendInt(-1);
+                return;
+            }
             appendInt(itemBytes.length);
             append(itemBytes);
         });

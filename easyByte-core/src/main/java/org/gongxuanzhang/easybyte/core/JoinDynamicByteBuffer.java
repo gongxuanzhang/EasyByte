@@ -123,9 +123,9 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
     }
 
     @Override
-    public void clear() {
+    public void clearRegister() {
         if (this.objectConfig != null) {
-            this.objectConfig.clear();
+            this.objectConfig.clearRegister();
         }
     }
 
@@ -151,11 +151,14 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
 
     @Override
     public String getProperty(String key, String defaultValue) {
-        String value = getProperty(key);
-        if (value != null) {
-            return value;
+        if (this.objectConfig == null) {
+            return globalConfig.getProperty(key, defaultValue);
         }
-        return defaultValue;
+        String value = this.objectConfig.getProperty(key);
+        if (value == null) {
+            return globalConfig.getProperty(key, defaultValue);
+        }
+        return value;
     }
 
 
@@ -179,5 +182,12 @@ public class JoinDynamicByteBuffer extends AbstractDynamicByteBuffer {
         }
         result.addAll(this.globalConfig.keySet());
         return result;
+    }
+
+    @Override
+    public void clearProperties() {
+        if (this.objectConfig != null) {
+            this.objectConfig.clearProperties();
+        }
     }
 }

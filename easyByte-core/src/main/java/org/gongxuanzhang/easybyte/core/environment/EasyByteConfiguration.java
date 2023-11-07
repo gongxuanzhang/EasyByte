@@ -56,8 +56,15 @@ public interface EasyByteConfiguration extends ConvertRegister {
 
     /**
      * get key set
+     *
      * @return like {@link Map#keySet()}
      **/
     Set<String> keySet();
+
+
+    /**
+     * clean all properties
+     **/
+    void clearProperties();
 
 }

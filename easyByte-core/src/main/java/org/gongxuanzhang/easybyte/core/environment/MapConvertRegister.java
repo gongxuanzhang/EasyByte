@@ -67,7 +67,7 @@ public class MapConvertRegister implements ConvertRegister {
     }
 
     @Override
-    public void clear() {
+    public void clearRegister() {
         readConvertMap.clear();
         writeConvertMap.clear();
     }

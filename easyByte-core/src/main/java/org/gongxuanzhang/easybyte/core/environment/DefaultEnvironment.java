@@ -10,7 +10,7 @@ package org.gongxuanzhang.easybyte.core.environment;
  * @author gongxuanzhangmelt@gmail.com
  **/
 public enum DefaultEnvironment {
-    ;
+    TODO("todo");
 
 
     private final String defaultValue;

@@ -11,6 +11,9 @@ public class DummyReadConverter implements ReadConverter<Dummy> {
 
     @Override
     public Dummy toObject(byte[] bytes,int length) {
+        if(length<0){
+            return null;
+        }
         DynamicByteBuffer buffer = DynamicByteBuffer.wrap(bytes);
         int age = buffer.getInt();
         Dummy dummy = new Dummy();

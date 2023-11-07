@@ -66,6 +66,6 @@ public interface ConvertRegister {
     /**
      * clear the register
      **/
-    void clear();
+    void clearRegister();
 
 }

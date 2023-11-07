@@ -27,7 +27,7 @@ public class GlobalConfig extends BaseConfiguration {
 
     private GlobalConfig() {
         for (DefaultEnvironment item : DefaultEnvironment.values()) {
-            this.setProperty(item.toString(), item.getDefaultValue());
+            super.setProperty(item.toString(), item.getDefaultValue());
         }
         surefireDynamicWrite.put(String.class, () -> StringWriteConverter.charset(StandardCharsets.UTF_8));
         surefireDynamicRead.put(String.class, () -> StringReadConverter.charset(StandardCharsets.UTF_8));
@@ -39,17 +39,17 @@ public class GlobalConfig extends BaseConfiguration {
         throw new UnsupportedOperationException("global config can't update");
     }
 
-    private static volatile GlobalConfig INSTANCE = null;
+    private static volatile GlobalConfig instance = null;
 
     public static GlobalConfig getInstance() {
-        if (INSTANCE == null) {
+        if (instance == null) {
             synchronized (GlobalConfig.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new GlobalConfig();
+                if (instance == null) {
+                    instance = new GlobalConfig();
                 }
             }
         }
-        return INSTANCE;
+        return instance;
     }
 
     @SuppressWarnings("unchecked")

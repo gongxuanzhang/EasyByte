@@ -28,7 +28,7 @@ class ObjectBufferTest {
     @AfterEach
     void clearConfig() {
         GlobalConfig config = GlobalConfig.getInstance();
-        config.clear();
+        config.clearRegister();
     }
 
     @ParameterizedTest
@@ -75,7 +75,12 @@ class ObjectBufferTest {
                 dummy.setName(UUID.randomUUID().toString());
                 dummy.setAge(i);
             }
-            list.add(dummy);
+            if (i % 7 == 0) {
+                list.add(null);
+            } else {
+                list.add(dummy);
+            }
+
         }
         return list;
     }

@@ -1,5 +1,6 @@
 package org.gongxuanzhang.easybyte.core;
 
+import org.gongxuanzhang.easybyte.core.environment.DefaultEnvironment;
 import org.gongxuanzhang.easybyte.core.environment.ObjectConfig;
 import org.gongxuanzhang.easybyte.core.exception.ConverterNotFoundException;
 import org.gongxuanzhang.easybyte.core.exception.GenericNotFoundException;
@@ -8,6 +9,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -43,7 +46,7 @@ class JoinDynamicByteBufferTest {
         for (int i = 0; i < 10; i++) {
             assertEquals("b", allocate.getProperty(i + ""));
         }
-        allocate.clear();
+        allocate.clearProperties();
         for (int i = 0; i < 10; i++) {
             assertNull(allocate.getProperty(i + ""));
         }
@@ -59,7 +62,35 @@ class JoinDynamicByteBufferTest {
         objectConfig.registerReadConverter(new TestReadConverter());
         DynamicByteBuffer allocate = DynamicByteBuffer.allocate(objectConfig);
         assertEquals("b", allocate.getProperty("a"));
+        assertEquals("b", allocate.getProperty("a", "c"));
         assertNotNull(allocate.findReadConverter(JoinDynamicByteBufferTest.class));
+
+        DynamicByteBuffer buffer = DynamicByteBuffer.wrap(allocate.toBytes(), objectConfig);
+        assertEquals("b", buffer.getProperty("a"));
+        assertNotNull(buffer.findReadConverter(JoinDynamicByteBufferTest.class));
+
+        buffer.clearRegister();
+        assertThrowsExactly(ConverterNotFoundException.class,
+                () -> buffer.findReadConverter(JoinDynamicByteBufferTest.class));
+        allocate.removeProperty("a");
+        assertEquals("c", allocate.getProperty("a", "c"));
+    }
+
+    @Test
+    void testTraversalProperties() {
+        DynamicByteBuffer allocate = DynamicByteBuffer.allocate();
+        for (int i = 0; i < 10; i++) {
+            allocate.setProperty(i + "", "");
+        }
+        Set<String> strings = allocate.keySet();
+        Set<String> key = new HashSet<>();
+        for (int i = 0; i < 10; i++) {
+            key.add(i + "");
+        }
+        for (DefaultEnvironment value : DefaultEnvironment.values()) {
+            key.add(value.toString());
+        }
+        assertEquals(key, strings);
     }
 
 

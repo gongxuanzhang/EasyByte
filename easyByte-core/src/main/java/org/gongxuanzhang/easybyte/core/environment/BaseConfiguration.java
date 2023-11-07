@@ -73,7 +73,12 @@ public abstract class BaseConfiguration implements EasyByteConfiguration {
     }
 
     @Override
-    public void clear() {
-        propertiesMap.clear();
+    public void clearRegister() {
+        this.convertRegister.clearRegister();
+    }
+
+    @Override
+    public void clearProperties() {
+        this.propertiesMap.clear();
     }
 }

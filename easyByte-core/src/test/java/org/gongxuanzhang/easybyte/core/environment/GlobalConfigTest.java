@@ -7,13 +7,14 @@ import javax.swing.ComponentInputMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 
 class GlobalConfigTest {
 
 
     @Test
-     void testGetInstance() {
+    void testGetInstance() {
         GlobalConfig config1 = GlobalConfig.getInstance();
         GlobalConfig config2 = GlobalConfig.getInstance();
 
@@ -21,13 +22,13 @@ class GlobalConfigTest {
     }
 
     @Test
-    void testProperty(){
+    void testProperty() {
         GlobalConfig config = GlobalConfig.getInstance();
-        config.setProperty("a","b");
-        assertEquals("b",config.getProperty("a"));
-        config.setProperty("a","a");
-        assertEquals("a",config.getProperty("a"));
-        assertNull(config.getProperty("b"));
+        for (DefaultEnvironment value : DefaultEnvironment.values()) {
+            String property = config.getProperty(value);
+            assertEquals(value.getDefaultValue(), property);
+        }
+        assertThrowsExactly(UnsupportedOperationException.class, () -> config.setProperty("a", "b"));
     }
 
 }
