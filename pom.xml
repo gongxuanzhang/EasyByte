@@ -22,16 +22,16 @@
     </properties>
 
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <url>http://172.16.1.10:8084/repository/gaea/</url>
-        </snapshotRepository>
-        <repository>
-            <id>nexus-releases</id>
-            <url>http://172.16.1.10:8084/repository/gaea/</url>
-        </repository>
-    </distributionManagement>
+<!--    <distributionManagement>-->
+<!--        <snapshotRepository>-->
+<!--            <id>nexus-snapshots</id>-->
+<!--            <url>http://172.16.1.10:8084/repository/gaea/</url>-->
+<!--        </snapshotRepository>-->
+<!--        <repository>-->
+<!--            <id>nexus-releases</id>-->
+<!--            <url>http://172.16.1.10:8084/repository/gaea/</url>-->
+<!--        </repository>-->
+<!--    </distributionManagement>-->
 
 <!--    <distributionManagement>-->
 <!--        <snapshotRepository>-->
