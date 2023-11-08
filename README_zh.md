@@ -6,23 +6,23 @@
 [![Java 8+](https://img.shields.io/badge/java-8+-4c7e9f.svg)](http://java.oracle.com)
 [![Apache License 2](https://img.shields.io/badge/license-APL2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-[中文文档](./README_zh.md)
+[English](./README.md)
 
-## What is EasyByte?
+## EasyByte是什么?
 
-EasyByte is a ByteBuffer operate library. Simple,easy to use
+EasyByte是一个ByteBuffer的操作库，简单好用。
 
-## Why EasyByte?
+## 为什么使用EasyByte?
 
-- JDK's native ByteBuffer that after allocate can't update capacity, `EasyByte` can create a dynamic ByteBuffer.
-- Strings are something we need to add frequently but ByteBuffer only support byte array.
-- If you have a container like List,Map,must design a format policy，`EasyByte` can easy to use.
-- Annoyed by the read and write mode of the native ByteBuffer. ByteBuffer created from `EasyByte` is read-write separated.
-
-
+- JDK原生的ByteBuffer在创建之后不能修改容量，`EasyByte`可以创建一个动态的ByteBuffer
+- String是我们需要频繁添加的类型，但是原生ByteBuffer只能添加字节数组
+- 如果你有一个集合,比如说List,Map，必须设计一些格式化方法，`EasyByte`可以让你很容易添加。
+- 你对原生的ByteBuffer的读写模式很头疼，`EasyByte`创建的ByteBuffer是一个读写分离的
 
 
-## Some API
+
+
+## 一些API
 
 [source,java,indent=0]
 ----
@@ -66,11 +66,11 @@ public class HowToUse {
 
 
 
-## Contributing
+## 贡献代码
 
-If you like EasyByte, star it please.
+若觉得不错，请Star.
 
-Please feel free to submit an [issue](https://github.com/gongxuanzhang/EasyByte/issues/new).
+有问题和需求请直接提[issue](https://github.com/gongxuanzhang/EasyByte/issues/new).
 
-Fork and [PR](https://github.com/gongxuanzhang/EasyByte/pulls) are always welcomed.
+和我一起改进,请提交 [PR](https://github.com/gongxuanzhang/EasyByte/pulls) 
 
