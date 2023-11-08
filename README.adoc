@@ -1,28 +1,29 @@
-<p align="center">
- <img  src="image/logo.png" align="center" alt="GitHub Readme Stats" />
- <h2 align="center"></h2>
-</p>
+++++
+<p align="center"> <img src="image/logo.png" align="center" alt="GitHub Readme Stats" /> <h2 align="center"></h2> </p>
+++++
 
-[![Java 8+](https://img.shields.io/badge/java-8+-4c7e9f.svg)](http://java.oracle.com)
-[![Apache License 2](https://img.shields.io/badge/license-APL2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-[中文文档](./README_zh.md)
 
-## What is EasyByte?
+== image:https://img.shields.io/badge/java-8+-4c7e9f.svg["Build Status", link="http://java.oracle.com"] image:https://img.shields.io/badge/license-APL2-blue.svg["Chat",link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
 
-EasyByte is a ByteBuffer operate library. Simple,easy to use
 
-## Why EasyByte?
+link:./README_zh.adoc[中文文档]
+
+
+== What is EasyByte?
+
+EasyByte is a ByteBuffer operate library.
+Simple,easy to use
+
+== Why EasyByte?
 
 - JDK's native ByteBuffer that after allocate can't update capacity, `EasyByte` can create a dynamic ByteBuffer.
 - Strings are something we need to add frequently but ByteBuffer only support byte array.
 - If you have a container like List,Map,must design a format policy，`EasyByte` can easy to use.
-- Annoyed by the read and write mode of the native ByteBuffer. ByteBuffer created from `EasyByte` is read-write separated.
+- Annoyed by the read and write mode of the native ByteBuffer.
+ByteBuffer created from `EasyByte` is read-write separated.
 
-
-
-
-## Some API
+== Some API
 
 [source,java,indent=0]
 ----
@@ -61,16 +62,11 @@ public class HowToUse {
 
 ----
 
-
-
-
-
-
-## Contributing
+== Contributing
 
 If you like EasyByte, star it please.
 
-Please feel free to submit an [issue](https://github.com/gongxuanzhang/EasyByte/issues/new).
+Please feel free to submit an link:https://github.com/gongxuanzhang/EasyByte/issues/new[issue].
 
-Fork and [PR](https://github.com/gongxuanzhang/EasyByte/pulls) are always welcomed.
+Fork and link:https://github.com/gongxuanzhang/EasyByte/pulls[PR] are always welcomed.
 
