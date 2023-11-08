@@ -4,7 +4,10 @@
 
 
 
-== image:https://img.shields.io/badge/java-8+-4c7e9f.svg["Build Status", link="http://java.oracle.com"] image:https://img.shields.io/badge/license-APL2-blue.svg["Chat",link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
+image:https://img.shields.io/badge/java-8+-4c7e9f.svg[link="http://java.oracle.com"]
+image:https://img.shields.io/github/license/gongxuanzhang/EasyByte[link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
+image:https://img.shields.io/maven-central/v/org.gongxuanzhang/easyByte["groupId"]
+image:https://img.shields.io/github/languages/code-size/gongxuanzhang/EasyByte[]
 
 
 link:./README.adoc[English]
