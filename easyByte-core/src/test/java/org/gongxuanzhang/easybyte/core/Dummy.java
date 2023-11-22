@@ -31,7 +31,7 @@ public class Dummy implements ByteWrapper {
     @Override
     public byte[] toBytes() {
         DynamicByteBuffer byteBuffer = DynamicByteBuffer.allocate();
-        byteBuffer.appendInt(Objects.requireNonNullElse(this.age, -1));
+        byteBuffer.appendInt(this.age == null ? -1 : this.age);
         byteBuffer.appendString(this.name);
         return byteBuffer.toBytes();
     }
