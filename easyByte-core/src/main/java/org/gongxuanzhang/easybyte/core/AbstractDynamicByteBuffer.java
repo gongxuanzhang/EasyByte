@@ -213,10 +213,10 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
 
     @Override
     public DynamicByteBuffer appendString(String s, WriteConverter<String> convert) {
-        if(s == null){
+        if (s == null) {
             return appendInt(-1);
         }
-        if(s.isEmpty()){
+        if (s.isEmpty()) {
             return appendInt(0);
         }
         byte[] stringBytes = convert.toBytes(s);
@@ -471,7 +471,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
         appendInt(collection.size());
         collection.forEach(item -> {
             byte[] itemBytes = convert.toBytes(item);
-            if(itemBytes == null){
+            if (itemBytes == null) {
                 appendInt(-1);
                 return;
             }
@@ -501,7 +501,7 @@ public abstract class AbstractDynamicByteBuffer implements DynamicByteBuffer {
             return this.appendInt(-1);
         }
         byte[] objectBytes = converter.toBytes(object);
-        if(objectBytes == null){
+        if (objectBytes == null) {
             return this.appendInt(-1);
         }
         appendInt(objectBytes.length);

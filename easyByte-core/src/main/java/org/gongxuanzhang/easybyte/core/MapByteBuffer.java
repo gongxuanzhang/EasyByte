@@ -61,7 +61,8 @@ public interface MapByteBuffer extends ConvertRegister {
      * else will find converter in register.
      * if map is not empty that easy byte will find converter by the class that first entry key and value .
      * so the items in map is polymorphism please use
-     * {@link MapByteBuffer#appendMap(Map, WriteConverter, WriteConverter)} since can't get accurate generic type of map.
+     * {@link MapByteBuffer#appendMap(Map, WriteConverter, WriteConverter)} since can't get accurate generic type of
+     * map.
      * <p>
      * it maybe throw {@link ConverterNotFoundException} when can't find converter
      *

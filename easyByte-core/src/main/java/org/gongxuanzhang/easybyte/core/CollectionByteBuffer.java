@@ -15,7 +15,8 @@ public interface CollectionByteBuffer extends ConvertRegister {
 
     /**
      * append a collection
-     * first append collection size and then append collection item 1 size item 1 byte item N size item N byte like follows
+     * first append collection size and then append collection item 1 size item 1 byte item N size item N byte like
+     * follows
      * ┌──────────┬──────┬─────┬─────┬──────┐
      * │collection│item1 │item1│itemN│itemN │
      * │   size   │ size │ byte│ size│ byte │

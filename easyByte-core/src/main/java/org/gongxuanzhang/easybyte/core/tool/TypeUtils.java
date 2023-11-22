@@ -1,6 +1,5 @@
 package org.gongxuanzhang.easybyte.core.tool;
 
-import org.gongxuanzhang.easybyte.core.ReadConverter;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
