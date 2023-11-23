@@ -27,6 +27,30 @@ Simple,easy to use
 - Annoyed by the read and write mode of the native ByteBuffer.
 ByteBuffer created from `EasyByte` is read-write separated.
 
+== How to use?
+
+=== Maven
+[source,java,indent=0]
+----
+        <dependency>
+            <groupId>io.github.gongxuanzhang</groupId>
+            <artifactId>easyByte-core</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+----
+
+=== Gradle
+[source,gradle,indent=0]
+----
+    kotlin:
+    implementation("io.github.gongxuanzhang:easyByte-core:0.0.1")
+
+    groovy:
+    implementation group: 'io.github.gongxuanzhang', name: 'easyByte-core', version: '0.0.1'
+----
+
+
 == Some API
 
 [source,java,indent=0]
