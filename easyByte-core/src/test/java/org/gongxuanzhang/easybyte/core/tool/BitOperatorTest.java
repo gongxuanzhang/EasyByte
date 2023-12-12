@@ -22,7 +22,7 @@ class BitOperatorTest {
         int bitIndex = 3;
 
         byte resultAfterSettingZero = BitOperator.setBitToZero(byteValue, bitIndex);
-        assertEquals(0b1010101, resultAfterSettingZero); // Bit at index 3 should be reset to 0
+        assertEquals(0b1010101, resultAfterSettingZero);
     }
 
     @Test
